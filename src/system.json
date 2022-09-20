@@ -37,7 +37,6 @@
 	"gridUnits": "ft",
 	"primaryTokenAttribute": "stress",
 	"secondaryTokenAttribute": "determination",
-	"url": "https://github.com/mkscho63/sta",
-	"manifest": "https://raw.githubusercontent.com/mkscho63/sta/master/src/system.json",
-	"download": "https://raw.githubusercontent.com/mkscho63/sta/v1.1.6/package/sta-v1.1.6.zip"
+	"url": "https://github.com/IHaveThatPower/sta",
+	"manifest": "https://raw.githubusercontent.com/IHaveThatPower/sta/master/src/system.json"
 }
