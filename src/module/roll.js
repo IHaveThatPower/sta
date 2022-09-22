@@ -336,19 +336,19 @@ export class STARoll {
   }
 
   async sendToChat(speaker, content, roll, flavor) {
-  let messageProps = {
-    user: game.user.id,
-    speaker: ChatMessage.getSpeaker({actor: speaker}),
-    content: content,
-    sound: 'sounds/dice.wav'
-  };
-  if (typeof roll != 'undefined')
-    messageProps.roll = roll;
-  if (typeof flavor != 'undefined')
-    messageProps.flavor = flavor;
-    // Send's Chat Message to foundry, if items are missing they will appear as false or undefined and this not be rendered.
-    ChatMessage.create(messageProps).then((msg) => {
-      return msg;
-    });
+    let messageProps = {
+      user: game.user.id,
+      speaker: ChatMessage.getSpeaker({actor: speaker}),
+      content: content,
+      sound: 'sounds/dice.wav'
+    };
+    if (typeof roll != 'undefined')
+      messageProps.roll = roll;
+    if (typeof flavor != 'undefined')
+      messageProps.flavor = flavor;
+      // Send's Chat Message to foundry, if items are missing they will appear as false or undefined and this not be rendered.
+      ChatMessage.create(messageProps).then((msg) => {
+        return msg;
+      });
   }
 }

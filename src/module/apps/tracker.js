@@ -1,7 +1,7 @@
 export class STATracker extends Application {
   /**
    * The name of the communication socket used to update the tracker information.
-   * 
+   *
    * @private
    * @readonly
    * @constant {string}
@@ -10,7 +10,7 @@ export class STATracker extends Application {
 
   /**
    * An enumeration to identify different messages transmitted on the tracker update socket.
-   * 
+   *
    * @private
    * @readonly
    * @enum {string}
@@ -24,10 +24,10 @@ export class STATracker extends Application {
 
   /**
    * An enumeration to identify different resources.
-   * 
+   *
    * The actual representations of the the enumerations values are chosen such that they can be
    * used when concatenating identifiers for localization strings, HTML ids, etc.
-   * 
+   *
    * @private
    * @readonly
    * @enum {string}
@@ -41,14 +41,14 @@ export class STATracker extends Application {
 
   /**
    * A message to be transmitted on the tracker update socket
-   * 
+   *
    * @private
    * @class
    */
   static SocketMessage = class {
     /**
      * The type of message sent/received.
-     * 
+     *
      * @public
      * @readonly
      * @type {STATracker.MessageType}
@@ -57,7 +57,7 @@ export class STATracker extends Application {
 
     /**
      * The resource affected by this message, if any.
-     * 
+     *
      * @public
      * @readonly
      * @type {(STATracker.Resource|undefined)}
@@ -66,7 +66,7 @@ export class STATracker extends Application {
 
     /**
      * The value of the resource affected by this message, if any.
-     * 
+     *
      * @public
      * @readonly
      * @type {(number|undefined)}
@@ -75,9 +75,9 @@ export class STATracker extends Application {
 
     /**
      * Construct a new message for transmission on the tracker update socket
-     * @param {STATracker.MessageType} type 
-     * @param {(STATracker.Resource|undefined)} resource 
-     * @param {(number|undefined)} value 
+     * @param {STATracker.MessageType} type
+     * @param {(STATracker.Resource|undefined)} resource
+     * @param {(number|undefined)} value
      */
     constructor(type, resource, value) {
       this.type = type;
@@ -88,7 +88,7 @@ export class STATracker extends Application {
 
   /**
    * The default settings of this application.
-   * 
+   *
    * @public
    * @readonly
    * @property {object}
@@ -103,7 +103,7 @@ export class STATracker extends Application {
 
   /**
    * The momentum + and - buttons.
-   * 
+   *
    * @private
    * @readonly
    * @type {HTMLElement[]}
@@ -112,7 +112,7 @@ export class STATracker extends Application {
 
   /**
    * The momentum value input.
-   * 
+   *
    * @private
    * @readonly
    * @type {HTMLElement}
@@ -121,7 +121,7 @@ export class STATracker extends Application {
 
   /**
    * The threat + and - buttons.
-   * 
+   *
    * @private
    * @readonly
    * @type {HTMLElement[]}
@@ -130,7 +130,7 @@ export class STATracker extends Application {
 
   /**
    * The threat value input.
-   * 
+   *
    * @private
    * @readonly
    * @type {HTMLElement}
@@ -139,7 +139,7 @@ export class STATracker extends Application {
 
   /**
    * Get the limit of the given resource.
-   * 
+   *
    * @private
    * @param {STATracker.Resource} resource The resource to query the limit of.
    * @returns {6|99999999}
@@ -150,7 +150,7 @@ export class STATracker extends Application {
 
   /**
    * Get the current value of the given resource
-   * 
+   *
    * @private
    * @param {STATracker.Resource} resource The resource to query the value of.
    * @returns {number} The current value of the given resource
@@ -161,7 +161,7 @@ export class STATracker extends Application {
 
   /**
    * Send a new update message to the tracker update socket.
-   * 
+   *
    * @private
    * @param {STATracker.MessageType} type The type of update message to send.
    * @param {(STATracker.Resource|undefined)} resource The resource this message is relevant for.
@@ -175,7 +175,7 @@ export class STATracker extends Application {
 
   /**
    * Check if the user has the permission to modify the given resource.
-   * 
+   *
    * @param {STATracker.Resource} resource The resource to check the current user's permissions for.
    * @returns {true|false} true iff. the current user is allowed to modify the given resource, false otherwise.
    */
@@ -186,7 +186,7 @@ export class STATracker extends Application {
 
   /**
    * Check if the user has permission to write settings.
-   * 
+   *
    * @returns {true|false} true iff. the current user is allowed to write settings.
    */
   static UserCanWriteSettings() {
@@ -195,7 +195,7 @@ export class STATracker extends Application {
 
   /**
    * Update the given resource to the given value.
-   * 
+   *
    * @private
    * @param {STATracker.Resource} resource The resource to modify.
    * @param {number} value The value to set for the given resource.
@@ -227,7 +227,7 @@ export class STATracker extends Application {
 
   /**
    * Handle an interaction with the +/- button of the given resource.
-   * 
+   *
    * @param {STATracker.Resource} resource The resource to handle the event for.
    * @param {1|-1} delta The delta applied to the given resource.
    */
@@ -237,7 +237,7 @@ export class STATracker extends Application {
 
   /**
    * Handle a value for the given resource being set via the input field.
-   * 
+   *
    * @private
    * @param {STATracker.Resource} resource The resource to handle the event for.
    */
@@ -248,7 +248,7 @@ export class STATracker extends Application {
 
   /**
    * Update the displayed tracker values.
-   * 
+   *
    * @private
    */
   static UpdateTracker() {
@@ -258,7 +258,7 @@ export class STATracker extends Application {
 
   /**
    * Enable/Disable the momentum and threat +/- buttons and input fields depending on the current user's permissions.
-   * 
+   *
    * @private
    */
    static ConfigureTrackerInterface() {
@@ -275,7 +275,7 @@ export class STATracker extends Application {
 
   /**
    * Attach the event handlers to the momentum and threat +/- buttons
-   * 
+   *
    * @private
    */
    static ConfigureTrackerButtonActions() {
@@ -287,7 +287,7 @@ export class STATracker extends Application {
 
   /**
    * Attach the event handler to the momentum and threat input fields
-   * 
+   *
    * @private
    */
    static ConfigureTrackerInputActions() {
@@ -328,7 +328,7 @@ export class STATracker extends Application {
 
   /**
    * Process a message received on the tracker update socket.
-   * 
+   *
    * @private
    * @param {STATracker.SocketMessage} message The received message.
    */
@@ -349,8 +349,8 @@ export class STATracker extends Application {
 
   /**
    * Hookup the application interactivity.
-   * 
-   * @param {HTMLElement} html 
+   *
+   * @param {HTMLElement} html
    */
   activateListeners(html) {
     STATracker.MomentumButtons.push(
@@ -364,6 +364,17 @@ export class STATracker extends Application {
       html.find('#sta-threat-track-increase')[0]
     )
     STATracker.ThreatInput = html.find('#sta-track-threat')[0];
+
+    html.find('#sta-momentum-tracker .header').click(function ()
+    {
+      if (game.journal.getName("Momentum"))
+        game.journal.getName("Momentum").sheet.render(true);
+    });
+    html.find('#sta-threat-tracker .header').click(function ()
+    {
+      if (game.journal.getName("Threat"))
+        game.journal.getName("Threat").sheet.render(true);
+    });
 
     game.socket.on(STATracker.UPDATE_SOCKET_NAME, STATracker.OnSocketData);
 
