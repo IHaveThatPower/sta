@@ -340,7 +340,7 @@ export class STASmallCraftSheet extends ActorSheet {
         
       staActor.rollAttributeTest(ev, selectedSystem,
         parseInt(selectedSystemValue), selectedDepartment,
-        parseInt(selectedDepartmentValue), 2, this.actor);
+        parseInt(selectedDepartmentValue), 1, this.actor);
     });
     
     // If the check-button is clicked it fires the method challenge roll method. See actor.js for further info.
