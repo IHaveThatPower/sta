@@ -15,7 +15,7 @@ export class STACharacterWeaponSheet extends ItemSheet {
   /** @override */
   get template() {
     if ( !game.user.isGM && this.item.limited) {
-	        ui.notifications.warn('You do not have permission to view this item!');
+      ui.notifications.warn('You do not have permission to view this item!');
       return;
     }
     return `systems/sta/templates/items/character-weapon-sheet.html`;

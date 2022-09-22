@@ -118,7 +118,7 @@ export class STASharedActorFunctions {
         selectedDisciplineValue, complicationRange, speaker);
     }
   }
-	
+
   // This handles performing an challenge roll using the "Perform Challenge Roll" button.
   async rollChallengeRoll(event, weaponName, defaultValue, speaker) {
     event.preventDefault();

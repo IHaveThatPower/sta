@@ -14,8 +14,8 @@ export class STAArmorSheet extends ItemSheet {
   // If the player is not a GM and has limited permissions - send them to the limited sheet, otherwise, continue as usual.
   /** @override */
   get template() {
-    if ( !game.user.isGM && this.item.limited) {
-	        ui.notifications.warn('You do not have permission to view this item!');
+    if (!game.user.isGM && this.item.limited) {
+      ui.notifications.warn('You do not have permission to view this item!');
       return;
     }
     return `systems/sta/templates/items/armor-sheet.html`;
