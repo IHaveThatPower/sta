@@ -365,17 +365,6 @@ export class STATracker extends Application {
     )
     STATracker.ThreatInput = html.find('#sta-track-threat')[0];
 
-    html.find('#sta-momentum-tracker .header').click(function ()
-    {
-      if (game.journal.getName("Momentum"))
-        game.journal.getName("Momentum").sheet.render(true);
-    });
-    html.find('#sta-threat-tracker .header').click(function ()
-    {
-      if (game.journal.getName("Threat"))
-        game.journal.getName("Threat").sheet.render(true);
-    });
-
     game.socket.on(STATracker.UPDATE_SOCKET_NAME, STATracker.OnSocketData);
 
     STATracker.ConfigureTrackerInterface();
