@@ -6,7 +6,7 @@
                     <tr>
                         <td>{{#if useDetermination}}[{{add dicePool.length -1}}+1]{{else}}{{dicePool.length}}{{/if}}d20 </td>
                         <td>{{localize 'sta.roll.successthreshold'}}  {{target}}</td>
-                        <td>{{localize 'sta.roll.criticalthreshold'}} {{#if criticalThreshold}}{{criticalThreshold}}{{else}}1{{/if}}</td>
+                        <td>{{localize 'sta.roll.criticalthreshold'}} {{#if criticalThreshold}} <= {{criticalThreshold}}{{else}} = 1{{/if}}</td>
                         <td>{{localize 'sta.roll.complicationrange'}} {{complicationThreshold}}+</td>
                     </tr>
                 </table>

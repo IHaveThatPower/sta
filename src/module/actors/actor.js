@@ -223,11 +223,9 @@ export class STAActor extends Actor {
       }
     }, options);
     */
-    console.log("roll object:", r);
     const messageData = mergeObject({
       speaker: ChatMessage.getSpeaker({actor: this}),
     }, r);
-    console.log("message data from actor:" , messageData);
     return r.toMessage(messageData);
   }
 }

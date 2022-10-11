@@ -4,7 +4,7 @@ export class STARoll extends Roll
    * A generic dialog configuration method, which can be modified by
    * subclasses to supply roll-type-specific data. Uses the template
    * configured in each subclass.
-   * 
+   *
    * @param object options
    * @return  STARoll (or subclass thereof)
    */
@@ -16,7 +16,7 @@ export class STARoll extends Roll
       return;
     }
     const content = await renderTemplate(
-      this.templateDialog, 
+      this.templateDialog,
       mergeObject(
         {
           'defaultValue': null
@@ -24,7 +24,7 @@ export class STARoll extends Roll
         options
       )
     );
-    
+
     // Create a new promise for the HTML above.
     return new Promise(resolve => {
       new Dialog({
@@ -41,7 +41,7 @@ export class STARoll extends Roll
       }, options).render(true);
     });
   }
-  
+
   /**
    * Handle submission of the Roll evaluation configuration Dialog
    *
@@ -51,12 +51,12 @@ export class STARoll extends Roll
   {
     return this;
   }
-  
+
   /**
    * Wrapper around Roll.evaluate that allows us to bypass the need to
    * specify async: true, which will eventually become the default
    * anyway
-   * 
+   *
    * @param mixed ...args
    * @return STARoll
    */
@@ -66,7 +66,7 @@ export class STARoll extends Roll
       return this;
     return super.evaluate({minimize: false, maximize: false, async: true})
   }
-  
+
   /**
    * @override
    */
@@ -76,10 +76,10 @@ export class STARoll extends Roll
     const chatData = this._getBaseChatData(flavor, isPrivate)
     return renderTemplate(template, chatData);
   }
-  
+
   /**
    * Get default chat data pertinent to any sort of roll
-   * 
+   *
    * @param string flavor
    * @param boolean isPrivate
    * @return  object
@@ -95,7 +95,7 @@ export class STARoll extends Roll
       total: isPrivate ? "?" : Math.round(this.total * 100) / 100,
     };
   }
-  
+
   /**
    * @override
    */
@@ -105,10 +105,10 @@ export class STARoll extends Roll
     /*
     // Perform the roll, if it has not yet been rolled
     if (!this._evaluated ) await this.evaluate();
-    
+
     // Get the normal message
     const superMessage = await super.toMessage(messageData, {rollMode: rollMode, create: false});
-    
+
     const cls = getDocumentClass("ChatMessage");
     return cls.create(superMessage, {rollMode});
     */
@@ -119,7 +119,7 @@ export class STARoll extends Roll
     // Create variable div and populate it with localisation to use in the HTML.
     const variablePrompt = game.i18n.format('sta.roll.item.quantity');
     const variable = `<div class='dice-formula'> `+variablePrompt.replace('|#|', item.system.quantity)+`</div>`;
-    
+
     // Send the divs to populate a HTML template and sends to chat.
     this.genericItemTemplate(item.img, item.name,
       item.system.description, variable, null)
@@ -159,10 +159,10 @@ export class STARoll extends Roll
     // Create variable div and populate it with localisation to use in the HTML.
     const variablePrompt = game.i18n.format('sta.roll.weapon.damage');
     const variable = `<div class='dice-formula'> `+variablePrompt.replace('|#|', item.system.damage)+`</div>`;
-    
+
     // Create dynamic tags div and populate it with localisation to use in the HTML.
     let tags = '';
-    
+
     if (item.system.qualities.melee) tags += '<div class=\'tag\'> '+game.i18n.format('sta.actor.belonging.weapon.melee')+'</div>';
     if (item.system.qualities.ranged) tags += '<div class=\'tag\'> '+game.i18n.format('sta.actor.belonging.weapon.ranged')+'</div>';
     if (item.system.qualities.area) tags += '<div class=\'tag\'> '+game.i18n.format('sta.actor.belonging.weapon.area')+'</div>';
@@ -181,7 +181,7 @@ export class STARoll extends Roll
     if (item.system.qualities.piercingx > 0) tags += '<div class=\'tag\'> '+game.i18n.format('sta.actor.belonging.weapon.piercingx') + ' ' + item.system.qualities.piercingx +'</div>';
     if (item.system.qualities.viciousx > 0) tags += '<div class=\'tag\'> '+game.i18n.format('sta.actor.belonging.weapon.viciousx') + ' ' + item.system.qualities.viciousx +'</div>';
 
-        
+
     // Send the divs to populate a HTML template and sends to chat.
     this.genericItemTemplate(item.img, item.name,
       item.system.description, variable, tags)
@@ -192,7 +192,7 @@ export class STARoll extends Roll
     // Create variable div and populate it with localisation to use in the HTML.
     const variablePrompt = game.i18n.format('sta.roll.armor.protect');
     const variable = `<div class='dice-formula'> `+variablePrompt.replace('|#|', item.system.protection)+`</div>`;
-    
+
     // Send the divs to populate a HTML template and sends to chat.
     this.genericItemTemplate(item.img, item.name,
       item.system.description, variable, null)
@@ -215,7 +215,7 @@ export class STARoll extends Roll
                           </div>
                         `+varField+`
                         <div class="dice-tooltip">`+descField+`</div>
-                          <div class='tags'> 
+                          <div class='tags'>
                             `+tagField+`
                           </div>
                         <div>
@@ -257,7 +257,7 @@ export class STATaskRoll extends STARoll
    * We ignore formula and data, constructing them ourselves from
    * options, but we need to preserve the funcsig for all the other
    * stuff that uses it.
-   * 
+   *
    * @param string formula
    * @param object data
    * @param object options
@@ -268,7 +268,7 @@ export class STATaskRoll extends STARoll
     // If we were called blind, give us some safety
     if (typeof options != 'object')
       options = {};
-    
+
     if (!options.dicePool)
       options.dicePool = STATaskRoll.DEFAULT_DICE_NUMBER;
     if (!options.target)
@@ -281,22 +281,22 @@ export class STATaskRoll extends STARoll
       options.useDetermination = false;
     if (!options.actor)
       throw new Error("Actor must be supplied");
-    
+
     const ret = super(STATaskRoll.ROLL_FORMULA, {
-        dicePool: options.dicePool, 
-        target: options.target, 
+        dicePool: options.dicePool,
+        target: options.target,
         complication: STATaskRoll.getComplicationThreshold(options.complicationRange)
       },
       options
     );
-    
+
     this.templateDialog = this.constructor.TEMPLATE_DIALOG;
     this.templateResult = this.constructor.CHAT_TEMPLATE;
     this.options = options;
     // this._populateTemplateParams();
     return ret;
   }
-  
+
   /**
    * Recreate a Roll instance using a provided data object
    * @param {object} data   Unpacked data representing the Roll
@@ -313,12 +313,25 @@ export class STATaskRoll extends STARoll
     }
     return super.fromData(data);
   }
-  
+
+  /**
+   * Given a value representing the complication range (i.e. 1, 2, 3),
+   * convert that into a "failure" roll on the actual die result.
+   *
+   * @param int complicationRange
+   * @return int
+   */
   static getComplicationThreshold(complicationRange)
   {
     return (21 - (Number(complicationRange) || STATaskRoll.DEFAULT_COMPLICATION_RANGE));
   }
 
+  /**
+   * Basic wrapper around configureDialog
+   *
+   * @param object options
+   * @return  STATaskRoll
+   */
   async configureDialog(options)
   {
     if (typeof options != 'object')
@@ -326,7 +339,12 @@ export class STATaskRoll extends STARoll
     options = mergeObject(this.options, options);
     return await super.configureDialog(options);
   }
-  
+
+  /**
+   * Getter for an instance's complication threshold
+   *
+   * @return  int
+   */
   get complicationThreshold()
   {
     return STATaskRoll.getComplicationThreshold(this.options.complicationRange);
@@ -334,14 +352,14 @@ export class STATaskRoll extends STARoll
 
   /**
    * Callback for what to do when the dice roll dialog is submitted
-   * 
+   *
    * @param object html
    * @return  STATaskRoll
    */
   _onDialogSubmit(html)
   {
     const form = html[0].querySelector("form");
-    
+
     // Update our options with information derived from the form data
     this.options.dicePool = Number(form.dicePoolSlider.value);
     let baseValue = 0;
@@ -365,20 +383,20 @@ export class STATaskRoll extends STARoll
     }
     this.options.complicationRange = Number(form.complicationRange.value) || this.options.complicationRange;
     this.options.useDetermination = Boolean(form.usingDetermination.checked);
-    
+
     // Regenerate some of our central assumptions now
     this.data = this._prepareData({dicePool: this.options.dicePool, target: this.options.target, complication: this.complicationThreshold});
     this.terms = this.constructor.parse(STATaskRoll.ROLL_FORMULA, this.data, this.options);
     this._dice = [];
     this._formula = this.constructor.getFormula(this.terms);
-    
+
     return this;
   }
 
   /**
    * Extension of normal Roll behavior to do the necessary computation
    * for evaluating the result of a Task roll
-   * 
+   *
    * @param mixed ...args
    * @return STATaskRoll
    */
@@ -386,7 +404,7 @@ export class STATaskRoll extends STARoll
   {
     // Compute!
     await super._evaluate(...args);
-       
+
     // Now give the dice terms some help.
     for (let t of this.terms)
     {
@@ -411,17 +429,38 @@ export class STATaskRoll extends STARoll
       this.terms[0].number += 1;
       this.terms[0].results.push({result: 1, active: true, count: 2, success: true, determination: true});
     }
-    
+
     // Re-evaluate the total
     this._total = this._evaluateTotal();
-    
-    // Populate needed templating parameters
-    // this._populateTemplateParams();
-    
+
     return this;
   }
-  
+
   /**
+   * Extend behavior of parent STARoll class
+   *
+   * @return  object
+   */
+  async _getBaseChatData()
+  {
+    const baseChatData = await super._getBaseChatData();
+    switch (this.options.actor.type)
+    {
+      case 'character':
+        baseChatData.flavor = game.i18n.format('sta.actor.character.attribute.' + this.options.base) + ' ' + game.i18n.format('sta.actor.character.discipline.' + this.options.skill) + ' ' + game.i18n.format('sta.roll.task.name');
+        break;
+      default:
+        baseChatData.flavor = game.i18n.format('sta.actor.starship.system.' + this.options.base) + ' ' + game.i18n.format('sta.actor.starship.department.' + this.options.skill) + ' ' + game.i18n.format('sta.roll.task.name');
+        break;
+    }
+    return baseChatData;
+  }
+
+  /**
+   * Populate all of the parameters our chat template needs to display
+   * roll results properly
+   *
+   * @return object
    */
   async _populateTemplateParams()
   {
@@ -444,13 +483,13 @@ export class STATaskRoll extends STARoll
     const multipleComplicationsAllowed = game.settings.get('sta', 'multipleComplications');
     if (!multipleComplicationsAllowed && templateParams.numComplications > 1)
       templateParams.numComplications = 1;
-    
+
     return templateParams;
   }
-  
+
   /**
    * Render the roll result to HTML
-   * 
+   *
    * @param object options
    * @return  Promise<string>
    */
@@ -458,42 +497,22 @@ export class STATaskRoll extends STARoll
   {
     if (!this._evaluated) await this.evaluate();
     const baseChatData = await this._getBaseChatData();
-    switch (this.options.actor.type)
-    {
-      case 'character':
-        flavor = game.i18n.format('sta.actor.character.attribute.' + this.options.base) + ' ' + game.i18n.format('sta.actor.character.discipline.' + this.options.skill) + ' ' + game.i18n.format('sta.roll.task.name');
-        break;
-      default:
-        flavor = game.i18n.format('sta.actor.starship.system.' + this.options.base) + ' ' + game.i18n.format('sta.actor.starship.department.' + this.options.skill) + ' ' + game.i18n.format('sta.roll.task.name');
-        break;
-    }
     const taskData = await this._populateTemplateParams();
 
     const mergedData = mergeObject(baseChatData, taskData);
-    return renderTemplate(template, mergeObject(mergedData)); // TODO: handle isPrivate
+    return await renderTemplate(template, mergedData); // TODO: handle isPrivate
   }
 
-    /*
-    // Set the flavour to "[Attribute] [Discipline] Attribute Test". This shows the chat what type of test occured.
-    let flavor = '';
-    switch (speaker.data.type) {
-    case 'character':
-      flavor = game.i18n.format('sta.actor.character.attribute.' + selectedAttribute) + ' ' + game.i18n.format('sta.actor.character.discipline.' + selectedDiscipline) + ' ' + game.i18n.format('sta.roll.task.name');
-      break;
-    case 'starship':
-      flavor = game.i18n.format('sta.actor.starship.system.' + selectedAttribute) + ' ' + game.i18n.format('sta.actor.starship.department.' + selectedDiscipline) + ' ' + game.i18n.format('sta.roll.task.name');
-    }
-
-    // Check if the dice3d module exists (Dice So Nice). If it does, post a roll in that and then send to chat after the roll has finished. If not just send to chat.
-    if (game.dice3d) {
-      game.dice3d.showForRoll(r).then((displayed) => {
-        this.sendToChat(speaker, html, r, flavor);
-      });
-    } else {
-      this.sendToChat(speaker, html, r, flavor);
-    };
+  /**
+   * @override
+   */
+  async toMessage(messageData={}, {rollMode, create=true}={})
+  {
+    const baseChatData = await this._getBaseChatData();
+    const taskData = await this._populateTemplateParams();
+    messageData = mergeObject(baseChatData, taskData, messageData);
+    return super.toMessage(messageData, {rollMode: rollMode, create: create});
   }
-  */
 }
 
 /**
@@ -509,7 +528,7 @@ export class STAChallengeRoll extends STARoll
     super(options);
     this.templateDialog = STAChallengeRoll.TEMPLATE_DIALOG;
   }
-  
+
  /*
 
   async performChallengeRoll(dicePool, weaponName, speaker) {
@@ -519,7 +538,7 @@ export class STAChallengeRoll extends STARoll
     let diceString = '';
     let success = 0;
     let effect = 0;
-        
+
     // Define r as our dice roll we want to perform (#d6). We will then roll it.
     const r = new Roll(dicePool+'d6');
     r.roll();
@@ -527,7 +546,7 @@ export class STAChallengeRoll extends STARoll
     // Now for each dice in the dice pool we want to check what the individual result was.
     for (i = 0; i < dicePool; i++) {
       result = r.terms[0].results[i].result;
-            
+
       switch (result) {
       case 1:
         diceString += '<li class="roll die d6"><img src="systems/sta/assets/icons/ChallengeDie_Success1_small.png" /></li>';
@@ -572,7 +591,7 @@ export class STAChallengeRoll extends STARoll
     }
 
     const flavor = weaponName + ' ' + game.i18n.format('sta.roll.task.name');
-                
+
     // Build a dynamic html using the variables from above.
     const html = `
           <div class="sta roll attribute">
@@ -601,7 +620,7 @@ export class STAChallengeRoll extends STARoll
                 <input id="speakerId" type="hidden" value="` + speaker.id + `" >
               </div>
             </div>`;
-    
+
     // Check if the dice3d module exists (Dice So Nice). If it does, post a roll in that and then send to chat after the roll has finished. If not just send to chat.
     if (game.dice3d) {
       game.dice3d.showForRoll(r).then((displayed) => {

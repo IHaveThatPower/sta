@@ -160,7 +160,7 @@
   "sta.roll.task.name": "Task",
   "sta.roll.complicationrange": "Complication:",
   "sta.roll.successthreshold": "Target:",
-  "sta.roll.criticalthreshold": "Crit <=",
+  "sta.roll.criticalthreshold": "Crit on:",
   "sta.roll.complication": "There was a complication!",
   "sta.roll.complicationPlural": "There were |#| complications!",
   "sta.roll.effect": "There was an effect!",
