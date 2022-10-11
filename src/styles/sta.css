@@ -1,0 +1,435 @@
+:root
+{
+  /* Color Definitions */
+  --color-black: #000000;
+  --color-black-chocolate: #191813;
+  --color-black-smoky: #0f0f0f;
+  --color-blue-bluebonnet: #1111ee;
+  --color-blue-cornflower: #7788ff;
+  --color-blue-gray-dark: #666688;
+  --color-blue-gray-independence: #444a77;
+  --color-blue-green-maximum: #33cccc;
+  --color-blue-ultramarine: #4455ff;
+  --color-gray-quartz: #4c4d47;
+  --color-orange-atomic-tangerine: #ff9966;
+  --color-orange-safety: #ff7700;
+  --color-orange-sunset: #ff5555;
+  --color-pink-melon: #ffbbaa;
+  --color-red-amaranth: #cc2233;
+  --color-red-ferrari: #ff2200;
+  --color-red-jasper: #dd4444;
+  --color-violet-lavender-indigo: #9944ff;
+  --color-violet-pale: #cc88ff;
+  --color-violet-x11: #cc33ff;
+  --color-white-alpha-30: rgba(255, 255, 255, 0.3);
+  --color-white: #ffffff;
+  --color-white-near: #fefefe;
+  --color-white-peach: #ffeeaa;
+  --color-yellow-bright-crayola: #faa41b;
+  --color-yellow-chrome: #ffaa00;
+  --color-yellow-sunglow: #ffcc33;
+}
+/* Window Content Overrides */
+.sta .window-content
+{
+  background: var(--color-black-smoky) !important;
+  padding: 0;
+}
+.sta .main-content
+{
+  background: var(--color-black-smoky) !important;
+  padding: 5px;
+}
+
+/* Globals */
+.sta .title
+{
+  text-align: center;
+  font-size: 14pt;
+}
+.sta
+{
+  text-align: center;
+}
+.sta .row
+{
+  display: flex;
+  flex-direction: row;
+}
+.sta .column
+{
+  flex-direction: column;
+}
+.sta .unset-clickables:hover
+{
+  box-shadow: unset !important;
+  text-shadow: unset !important;
+  cursor: unset !important;
+  content: unset !important;
+}
+
+/* Button Definitions */
+.sta .btn
+{
+  background-color: var(--color-yellow-sunglow);
+  color: var(--color-black);
+  border-radius: 20px;
+  font-weight: bold;
+}
+.sta .btn:hover
+{
+  box-shadow: none;
+  background-color: var(--color-white-peach);
+  cursor: pointer;
+}
+.sta .btn2
+{
+  background-color: var(--color-red-amaranth);
+  color: var(--color-black);
+  border-radius: 20px;
+  font-weight: bold;
+}
+.sta .btn2:hover
+{
+  box-shadow: none;
+  background-color: var(--color-red-jasper);
+  cursor: pointer;
+}
+
+/* Forms and Dialogs */
+.sta-form .label
+{
+  color: var(--color-yellow-bright-crayola);
+}
+.sta-form .numeric-entry
+{
+  color: var(--color-violet-pale);
+}
+.app.dialog .window-content .dialog-content
+{
+  color: var(--color-blue-green-maximum);
+}
+
+.app.dialog .window-content .form-fields input,
+.app.dialog .window-content .form-fields select
+{
+  color: var(--color-violet-pale);
+}
+
+.app.dialog .window-content .form-group input,
+.app.dialog .window-content .form-group select
+{
+  color: var(--color-violet-pale);
+}
+.dialog > .window-content
+{
+  padding: 0px;
+}
+.dialog > .window-content > .dialog-content
+{
+  background-color: var(--color-black-smoky);
+  padding: 8px;
+}
+.dialog > .window-content .dialog-buttons
+{
+  background-color: var(--color-black-smoky);
+}
+.dialog > .window-content .dialog-button.roll.default,
+.dialog > .window-content .dialog-button.ok.default,
+.dialog > .window-content .dialog-button.yes,
+.dialog > .window-content .dialog-button.no
+{
+  background-color: var(--color-yellow-sunglow);
+  color: var(--color-black);
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: bold;
+}
+.dialog > .window-content .dialog-button.roll.default:hover,
+.dialog > .window-content .dialog-button.ok.default:hover,
+.dialog > .window-content .dialog-button.yes:hover,
+.dialog > .window-content .dialog-button.no:hover
+{
+  box-shadow: none;
+  background-color: var(--color-white-peach);
+}
+
+.folder-edit .window-content,
+.folder-create .window-content
+{
+  background: var(--color-black-smoky);
+  color: var(--color-blue-green-maximum);
+}
+.folder-edit .window-content form,
+.folder-create .window-content form
+{
+  background-color: var(--color-black-smoky);
+}
+.folder-edit .window-content form input,
+.folder-create .window-content form input
+{
+  color: var(--color-violet-pale);
+}
+.folder-edit .window-content form button,
+.folder-create .window-content form button
+{
+  background-color: var(--color-yellow-sunglow);
+  color: var(--color-black);
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: bold;
+}
+.folder-edit .window-content form button:hover,
+.folder-create .window-content form button:hover
+{
+  box-shadow: none;
+  background-color: var(--color-white-peach);
+}
+
+/* Chat Log */
+.app .chat-message.message
+{
+  background: var(--color-black-smoky);
+}
+.app .chat-message.message .message-header,
+.app .chat-message.message .message-content
+{
+  color: var(--color-white-near);
+}
+.reroll-result
+{
+  flex: 0 0 100%;
+  position: relative;
+  margin: 0;
+  line-height: 24px;
+  text-align: center;
+  background: var(--color-black-smoky);
+  border: 1px solid var(--color-blue-gray-dark);
+  border-radius: 3px;
+  word-break: break-all;
+  margin-top: 5px;
+}
+.reroll-result:hover
+{
+  background-color: var(--color-white-peach);
+}
+.chat-message.message .reroll-result
+{
+  background-color: var(--color-yellow-sunglow);
+  color: var(--color-black);
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+}
+.chat-message.message .reroll-result:hover
+{
+  box-shadow: none;
+  background-color: var(--color-white-peach);
+}
+
+/* Dice Pools Dialog and Chat Messages */
+.dice-pool .flexrow
+{
+  padding: 4px 5px;
+}
+.dice-pool span.label
+{
+  text-align: center;
+}
+.dice-pool datalist
+{
+  display: flex;
+  justify-content: space-between;
+}
+.sta.roll .dice-roll .dice-result .dice-tooltip
+{
+  display: block;
+}
+.sta.roll.task .dice-roll .dice-result .dice-formula .aim
+{
+  margin: 0;
+  background: unset;
+  border: 0;
+}
+.sta.roll.task .dice-roll .dice-result .dice-tooltip .dice .dice-rolls
+{
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.sta.roll.task .dice-roll .dice-total.effect
+{
+  color: var(--color-blue-green-maximum);
+}
+.sta.roll.generic .dice-roll .dice-result .dice-formula
+{
+  box-shadow: none;
+  line-height: normal;
+  cursor: pointer;
+  word-break: normal;
+}
+.sta.roll.generic .dice-roll .dice-result .dice-formula.title
+{
+  display: flex;
+  flex-direction: row;
+  background: none;
+  border: none;
+  text-align: left;
+}
+.sta.roll.generic .dice-roll .dice-result .dice-formula .img
+{
+  height: 45px;
+}
+.sta.roll.generic .dice-roll .dice-result .tags
+{
+  display: flex;
+  flex-direction: row;
+  text-align: center;
+  flex-wrap: wrap;
+}
+.sta.roll.generic .dice-roll .dice-result .tags .tag
+{
+  width: calc(100%/3);
+  font-size: 12px;
+  flex-grow: 1;
+  border: 0.5px solid var(--color-black-smoky);
+  border-radius: 3px;
+  background-color: var(--color-white-alpha-30);
+}
+.sta.roll.generic .dice-roll .dice-total.effect
+{
+  color: var(--color-blue-green-maximum);
+}
+.message-content .table-draw img.result-image
+{
+  background: var(--color-gray-quartz);
+}
+.message-content .table-draw .result-text a.entity-link
+{
+  background: var(--color-black-smoky);
+}
+
+/* Sidebar */
+#sidebar:not(.collapsed)
+{
+  background: none;
+  border: none;
+  background-color: var(--color-orange-atomic-tangerine);
+  width: 350px;
+  border-top-left-radius: 35px;
+  border-bottom-left-radius: 0;
+}
+#sidebar:not(.collapsed) > #sidebar-tabs
+{
+  margin-left: 50px;
+}
+#sidebar:not(.collapsed) > #sidebar-tabs > .collapse
+{
+  border-left: 4px solid var(--color-black-smoky);
+  border-right: 4px solid var(--color-black-smoky);
+}
+#sidebar:not(.collapsed) > #sidebar-tabs > .item
+{
+  border-left: 4px solid var(--color-black-smoky);
+}
+#sidebar:not(.collapsed) > #sidebar-tabs > .item.active
+{
+  border-left: 4px solid var(--color-black-smoky);
+}
+#sidebar > #sidebar-tabs
+{
+  color: var(--color-black);
+  margin-bottom: 0;
+  border-bottom: none;
+  box-shadow: none;
+}
+#sidebar > #sidebar-tabs > .collapse
+{
+  background-color: var(--color-blue-cornflower);
+  border-top: none;
+  border-bottom: none;
+  border-radius: 0;
+  color: var(--color-black);
+}
+#sidebar > #sidebar-tabs > .item
+{
+  background-color: var(--color-orange-atomic-tangerine);
+  border-top: none;
+  border-bottom: none;
+  border-radius: 0;
+  color: var(--color-black);
+}
+#sidebar > #sidebar-tabs > .item:hover
+{
+  text-shadow: none;
+  background-color: var(--color-pink-melon);
+}
+#sidebar > #sidebar-tabs > .item:nth-child(odd)
+{
+  background-color: var(--color-blue-cornflower);
+}
+#sidebar > #sidebar-tabs > .item:nth-child(odd):hover
+{
+  background-color: var(--color-violet-pale);
+}
+#sidebar > #sidebar-tabs > .item.active
+{
+  box-shadow: none;
+  background-color: var(--color-red-amaranth);
+  border-bottom: none;
+  border-top: none;
+  color: var(--color-black);
+}
+#sidebar > #sidebar-tabs > .item.active:hover
+{
+  background-color: var(--color-orange-sunset);
+}
+#sidebar .sidebar-tab
+{
+  background: var(--color-black-smoky);
+  border-top: 5px solid var(--color-black-smoky);
+  width: 300px;
+  margin-left: 50px;
+}
+#sidebar .sidebar-tab .directory-header .create-entity,
+#sidebar .sidebar-tab .directory-header .create-folder
+{
+  font-weight: bold;
+  background-color: var(--color-yellow-sunglow);
+  color: var(--color-black);
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+}
+#sidebar .sidebar-tab .directory-header .create-entity:hover,
+#sidebar .sidebar-tab .directory-header .create-folder:hover
+{
+  box-shadow: none;
+  background-color: var(--color-white-peach);
+}
+#sidebar::before
+{
+  content: "";
+  position: absolute;
+  bottom: 60%;
+  right: 305px;
+  height: 25%;
+  width: 50px;
+  background-color: var(--color-blue-green-maximum);
+  border-top: 5px solid var(--color-black-smoky);
+  border-bottom: 5px solid var(--color-black-smoky);
+}
+#sidebar::after
+{
+  content: "";
+  position: absolute;
+  bottom: 20%;
+  right: 305px;
+  height: 20%;
+  width: 50px;
+  background-color: var(--color-orange-safety);
+  border-top: 5px solid var(--color-black-smoky);
+  border-bottom: 5px solid var(--color-black-smoky);
+}
