@@ -297,11 +297,47 @@ Hooks.once('init', function() {
   });
 });
 
-/*
-Hooks.on('renderChatLog', (app, html, data) =>
-  STAItem.chatListeners(html)
-);
-*/
+Hooks.on('renderChatLog', function(app, html, data) {
+  html.on('click', '.reroll-result.task', function(ev) {
+    ev.preventDefault();
+    let actor;
+    let selectedBase;
+    let selectedSkill;
+    let speakerId;
+    // Gather properties
+    for (let c of ev.currentTarget.childNodes)
+    {
+      if (c.nodeName?.toLowerCase() == 'input')
+      {
+        switch (c.id)
+        {
+          case 'actor':
+            actor = game.actors.get(c.value);
+            break;
+          case 'selectedBase':
+            selectedBase = c.value;
+            break;
+          case 'selectedSkill':
+            selectedSkill = c.value;
+            break;
+          case 'speakerId':
+            speakerId = c.value;
+            break;
+          default:
+            break;
+        }
+      }
+    }
+    if (!!actor && !speakerId) // No speaker, assume actor
+      speakerId = actor._id;
+    if (actor && selectedBase && selectedSkill)
+    {
+      return actor.performTaskRoll(selectedBase, selectedSkill);
+    }
+    else
+      ui.notifications.warning("Insufficient data to reroll");
+  });
+});
 
 // Fix old-style reputation
 Hooks.once('ready', function() {

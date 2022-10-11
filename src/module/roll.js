@@ -93,6 +93,7 @@ export class STARoll extends Roll
       flavor: flavor,
       tooltip: isPrivate ? "" : await this.getTooltip(),
       total: isPrivate ? "?" : Math.round(this.total * 100) / 100,
+      speaker: this.options.speaker || ChatMessage.getSpeaker({actor: this.options.actor})
     };
   }
 

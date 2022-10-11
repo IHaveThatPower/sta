@@ -29,7 +29,7 @@ export class STACharacterSheet extends ActorSheet {
     {
       // Checks if items for this actor have default images.
       if (!item.img) item.img = game.sta.defaultImage;
-      
+
       // Prepares item text for display
       await this._prepareTalentTooltips(item);
     }
@@ -39,13 +39,13 @@ export class STACharacterSheet extends ActorSheet {
     sheetData.actor = this.object;
     sheetData.items = this.object.items;
     sheetData.system = this.object.system;
-    
+
     return sheetData;
   }
-  
+
   /**
    * getData helper to prepare item tooltips
-   * 
+   *
    * @param object item
    * @return  void
    */
@@ -66,12 +66,12 @@ export class STACharacterSheet extends ActorSheet {
   /** @override */
   activateListeners(html) {
     super.activateListeners(html);
-    
+
     // If the player has limited access to the actor, there is nothing to see here. Return.
     if (!game.user.isGM && this.actor.limited) return;
 
     this._activateItemEditListeners(html);
-    
+
     // Hide/show the talent tooltip
     this._handleTalentClick(html);
 
@@ -102,11 +102,11 @@ export class STACharacterSheet extends ActorSheet {
     this._activateActiveStatListeners(html);
     this._activateStatRollListeners(html);
   }
-  
+
   /**
    * Subroutine for registering click handlers that deal with opening
    * item sheets
-   * 
+   *
    * @param object html
    * @return void
    */
@@ -119,11 +119,11 @@ export class STACharacterSheet extends ActorSheet {
       item.sheet.render(true);
     });
   }
-  
+
   /**
-   * Lock controls, such as when the viewing user doesn't have 
+   * Lock controls, such as when the viewing user doesn't have
    * edit access to this sheet
-   * 
+   *
    * @param object html
    * @return  void
    */
@@ -138,11 +138,11 @@ export class STACharacterSheet extends ActorSheet {
        element.classList.add('unset-clickables');
      }
    }
-   
+
    /**
     * Activates listeners for the Value sliders that shows whether or
     * not they have been used.
-    * 
+    *
     * @param  object html
     * @return void
     */
@@ -156,11 +156,11 @@ export class STACharacterSheet extends ActorSheet {
         this.render();
       });
     }
-    
+
     /**
      * Makes the buttons next to each item interactable, triggering a
      * roll when clicked
-     * 
+     *
      * @param object html
      * @return  void
      */
@@ -174,13 +174,13 @@ export class STACharacterSheet extends ActorSheet {
         staActor.rollGenericItem(ev, itemType, itemId, this.actor);
       });
     }
-    
+
     /**
-     * Allows item-create images to create an item of a type defined 
+     * Allows item-create images to create an item of a type defined
      * individually by each button.
-     * 
+     *
      * This uses code found via the Foundry VTT System Tutorial.
-     * 
+     *
      * @param object html
      * @return  void
      */
@@ -216,7 +216,7 @@ export class STACharacterSheet extends ActorSheet {
     /**
      * Allows item-delete images to allow deletion of the selected item.
      * This uses Simple Worldbuilding System Code.
-     * 
+     *
      * @param object html
      * @return  void
      */
@@ -230,11 +230,11 @@ export class STACharacterSheet extends ActorSheet {
           li.slideUp(200, () => this.render(false));
         }
       });
-    }    
+    }
 
     /**
      * Handle a tracker-like listener
-     * 
+     *
      * @param object html             The full Document html
      * @param string clickSelector    The selector to register the handler on
      * @param string  inputSelector   The hidden input that tracks the actual value
@@ -247,7 +247,7 @@ export class STACharacterSheet extends ActorSheet {
         let newTotal = ev.currentTarget?.dataset?.value;
         if (typeof newTotal == 'undefined') // Can't do anything
           return;
-        /** 
+        /**
          * If the one clicked is the same as the current value, treat it
          * as a "turn off" decrement
          */
@@ -260,10 +260,10 @@ export class STACharacterSheet extends ActorSheet {
         await this.submit();
       });
     }
-    
+
     /**
      * Handle user clicking on a talent to hide/show the talent summary
-     * 
+     *
      * @param object html
      * @return  void
      */
@@ -290,11 +290,11 @@ export class STACharacterSheet extends ActorSheet {
         }
       });
     }
-    
+
     /**
      * Handle user clicking on an attribute/discipline to make it the
      * chosen "active" one for rolls
-     * 
+     *
      * @param object html
      * @return void
      */
@@ -315,10 +315,10 @@ export class STACharacterSheet extends ActorSheet {
         }
       });
     }
-    
+
     /**
      * Fire off dice rolls based on elements of the UI that should do so
-     * 
+     *
      * @param object html
      * @return  void
      */
@@ -329,7 +329,7 @@ export class STACharacterSheet extends ActorSheet {
         const selectedDiscipline = html.find('input#use-discipline').val();
         return this.actor.performTaskRoll(selectedAttribute, selectedDiscipline);
       });
-          
+
       // If the check-button is clicked it fires the method challenge roll method. See actor.js for further info.
       html.find('.check-button.challenge').click(async (ev) => {
         let r = new STAChallengeRoll();
@@ -344,33 +344,6 @@ export class STACharacterSheet extends ActorSheet {
         const damage = parseInt(ev.target.parentElement.nextElementSibling.nextElementSibling.innerText) ?
           parseInt(ev.target.parentElement.nextElementSibling.nextElementSibling.innerText) : 0;
         staActor.rollChallengeRoll(ev, ev.target.dataset.itemName, damage, this.actor);
-        */
-      });
-
-      html.find('.reroll-result').click((ev) => {
-        /*
-        let selectedAttribute = '';
-        let selectedAttributeValue = '';
-        let selectedDiscipline = '';
-        let selectedDisciplineValue = '';
-        for (i = 0; i <= 5; i++) {
-          if (html.find('.selector.attribute')[i].checked === true) {
-            selectedAttribute = html.find('.selector.attribute')[i].id;
-            selectedAttribute = selectedAttribute.slice(0, -9);
-            selectedAttributeValue = html.find('#'+selectedAttribute)[0].value;
-          }
-        }
-        for (i = 0; i <= 5; i++) {
-          if (html.find('.selector.discipline')[i].checked === true) {
-            selectedDiscipline = html.find('.selector.discipline')[i].id;
-            selectedDiscipline = selectedDiscipline.slice(0, -9);
-            selectedDisciplineValue = html.find('#'+selectedDiscipline)[0].value;
-          }
-        }
-              
-        staActor.rollAttributeTest(ev, selectedAttribute,
-          parseInt(selectedAttributeValue), selectedDiscipline,
-          parseInt(selectedDisciplineValue), null, this.actor);
         */
       });
     }
