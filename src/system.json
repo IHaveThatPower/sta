@@ -19,7 +19,12 @@
   ],
   "esmodules": ["module/sta.js"],
   "socket": true,
-  "styles": ["sta.css"],
+  "styles": [
+    "styles/sta.css",
+    "styles/sta-actor.css",
+    "styles/sta-item.css",
+    "styles/sta-tracker.css"
+  ],
   "packs": [],
   "languages": [
     {

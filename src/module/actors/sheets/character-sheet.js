@@ -1,4 +1,4 @@
-import {STASharedActorFunctions} from '../actor.js';
+// import {STASharedActorFunctions} from '../actor.js';
 
 export class STACharacterSheet extends ActorSheet {
   /** @override */
@@ -14,466 +14,364 @@ export class STACharacterSheet extends ActorSheet {
     });
   }
 
-  /* -------------------------------------------- */
-
   // If the player is not a GM and has limited permissions - send them to the limited sheet, otherwise, continue as usual.
   /** @override */
   get template() {
-    let versionInfo = game.world.coreVersion;
-    if ( !game.user.isGM && this.actor.limited) return 'systems/sta/templates/actors/limited-sheet.html';
-    if (!isNewerVersion(versionInfo,"0.8.-1")) return "systems/sta/templates/actors/character-sheet-legacy.html";
+    if (!game.user.isGM && this.actor.limited) return 'systems/sta/templates/actors/limited-sheet.html';
     return `systems/sta/templates/actors/character-sheet.html`;
   }
 
-  /* -------------------------------------------- */
-
   /** @override */
-  getData() {
-    const sheetData = this.object;
-    sheetData.dtypes = ['String', 'Number', 'Boolean'];
+  async getData(options) {
+    const context = super.getData(options);
 
-    // Ensure attribute and discipline values aren't over the max/min.
-    $.each(sheetData.system.attributes, (key, attribute) => {
-      if (attribute.value > 12) attribute.value = 12; 
-      if (attribute.value < 7) attribute.value = 7; 
-    });
-    $.each(sheetData.system.disciplines, (key, discipline) => {
-      if (discipline.value > 5) discipline.value = 5;
-      if (discipline.value < 0) discipline.value = 0;
-    });
-
-    // Check stress max/min
-    if (!(sheetData.system.stress))
-      sheetData.system.stress = {};
-    if (sheetData.system.stress.value > sheetData.system.stress.max) {
-      sheetData.system.stress.value = sheetData.system.stress.max;
-    }
-    if (sheetData.system.stress.value < 0) {
-      sheetData.system.stress.value = 0;
-    }
-
-    // Check determination max/min
-    if (!(sheetData.system.determination))
-      sheetData.system.determination = {};
-    if (sheetData.system.determination.value > 3) {
-      sheetData.system.determination.value = 3;
-    }
-    if (sheetData.system.determination.value < 0) {
-      sheetData.system.determination.value = 0;
-    }
-    
-    // Check reputation max/min
-    if (!(sheetData.system.reputation))
-      sheetData.system.reputation = {};
-    if (sheetData.system.reputation.value > 20) {
-      sheetData.system.reputation.value = 20;
-    }
-    if (sheetData.system.reputation < 0) {
-      sheetData.system.reputation = 0;
-    }
-
-    // Checks if items for this actor have default images. Something with Foundry 0.7.9 broke this functionality operating normally.
-    // Stopgap until a better solution can be found.
-    $.each(sheetData.items, (key, item) => {
+    for (const item of this.object.items)
+    {
+      // Checks if items for this actor have default images.
       if (!item.img) item.img = game.sta.defaultImage;
-    })
+      
+      // Prepares item text for display
+      await this._prepareTalentTooltips(item);
+    }
 
+    // Compatibility shim to support all the templates using system.x
+    const sheetData = {...context, ...this.object};
+    sheetData.actor = this.object;
+    sheetData.items = this.object.items;
+    sheetData.system = this.object.system;
+    
     return sheetData;
   }
-
-  /* -------------------------------------------- */
+  
+  /**
+   * getData helper to prepare item tooltips
+   * 
+   * @param object item
+   * @return  void
+   */
+  async _prepareTalentTooltips(item)
+  {
+    if (item.type == "talent")
+    {
+      const fullDescription = item.system.description;
+      let tooltip = `${fullDescription}`;
+      tooltip = TextEditor.decodeHTML(fullDescription); // Decode to get a more "true" length
+      tooltip = TextEditor.truncateText(tooltip, {maxLength: 1000, splitWords: false}); // Truncate to 1000 chars
+      tooltip = TextEditor.decodeHTML(fullDescription); // Decode again to remove any invalid characters/tags our truncation introduced
+      tooltip = await TextEditor.enrichHTML(tooltip, {'async': true}); // Enrich, adding journal links and the like
+      item.sheetTooltip = tooltip; // Assign as unique property we can access
+    }
+  }
 
   /** @override */
   activateListeners(html) {
     super.activateListeners(html);
     
-    // Allows checking version easily
-    let versionInfo = game.world.coreVersion;
-
-    // Opens the class STASharedActorFunctions for access at various stages.
-    const staActor = new STASharedActorFunctions();
-
     // If the player has limited access to the actor, there is nothing to see here. Return.
-    if ( !game.user.isGM && this.actor.limited) return;
+    if (!game.user.isGM && this.actor.limited) return;
 
-    // We use i a lot in for loops. Best to assign it now for use later in multiple places.
-    let i;
+    this._activateItemEditListeners(html);
+    
+    // Hide/show the talent tooltip
+    this._handleTalentClick(html);
 
-    // TODO: This is not really doing anything yet
-    // Here we are checking if there is armor equipped. 
-    // The player can only have one armor. As such, we will use this later.
-    let armorNumber = 0;
-    let stressTrackMax = 0;
-    function armorCount(currentActor) {
-      armorNumber = 0;
-      currentActor.actor.items.forEach((values) => {
-        if (values.type == 'armor') {
-          if (values.equipped == true) armorNumber+= 1;
-        }
-      });
-    }
-    armorCount(this);
+    // Check if the form is editable; if not, hide control used by the
+    // owner, then abort any more of the script.
+    if (!this.options.editable)
+    {
+      this._lockControls(html);
+      return;
+    };
 
-    // This creates a dynamic Determination Point tracker. It sets max determination to 3 (it is dynamic in Dishonored) and
-    // creates a new div for each and places it under a child called "bar-determination-renderer"
-    const determinationPointsMax = 3;
-    for (i = 1; i <= determinationPointsMax; i++) {
-      const detDiv = document.createElement('DIV');
-      detDiv.className = 'box';
-      detDiv.id = 'determination-' + i;
-      detDiv.innerHTML = i;
-      detDiv.style = 'width: calc(100% / 3);';
-      html.find('#bar-determination-renderer')[0].appendChild(detDiv);
-    }
+    // This toggles whether a Value is used or not.
+    this._activateValueUseListeners(html);
 
-    // This creates a dynamic Stress tracker. It polls for the value of the fitness attribute, security discipline, and checks for Resolute talent. 
-    // With the total value, creates a new div for each and places it under a child called "bar-stress-renderer".
-    function stressTrackUpdate() {
-      stressTrackMax = parseInt(html.find('#fitness')[0].value) + parseInt(html.find('#security')[0].value);
-      if (html.find('[data-talent-name="Resolute"]').length > 0) {
-        stressTrackMax += 3;
-      }
-      // This checks that the max-stress hidden field is equal to the calculated Max Stress value, if not it makes it so.
-      if (html.find('#max-stress')[0].value != stressTrackMax) {
-        html.find('#max-stress')[0].value = stressTrackMax;
-      }
-      html.find('#bar-stress-renderer').empty();
-      for (let i = 1; i <= stressTrackMax; i++) {
-        const stressDiv = document.createElement('DIV');
-        stressDiv.className = 'box';
-        stressDiv.id = 'stress-' + i;
-        stressDiv.innerHTML = i;
-        stressDiv.style = 'width: calc(100% / ' + html.find('#max-stress')[0].value + ');';
-        html.find('#bar-stress-renderer')[0].appendChild(stressDiv);
-      }
-    }
-    stressTrackUpdate();
+    // Activate rollable buttons on items
+    this._activateRollableListeners(html);
 
-    // This creates a dynamic Reputation tracker. For this it uses a max value of 30. This can be configured here. 
-    // It creates a new div for each and places it under a child called "bar-rep-renderer"
-    const repPointsMax = game.settings.get('sta', 'maxNumberOfReputation');
-    for (let i = 1; i <= repPointsMax; i++) {
-      const repDiv = document.createElement('DIV');
-      repDiv.className = 'box';
-      repDiv.id = 'rep-' + i;
-      repDiv.innerHTML = i;
-      repDiv.style = 'width: calc(100% / ' + repPointsMax + ');';
-      html.find('#bar-rep-renderer')[0].appendChild(repDiv);
-    }
+    // Activate listeners for create/destroy items
+    this._activateItemCreateListeners(html);
+    this._activateItemDeleteListeners(html);
 
-    // Fires the function staRenderTracks as soon as the parameters exist to do so.
-    // staActor.staRenderTracks(html, stressTrackMax, determinationPointsMax, repPointsMax);
-    staActor.staRenderTracks(html, stressTrackMax,
-      determinationPointsMax, repPointsMax);
+    // Register handlers for when a tracker box is clicked
+    this._handleTrackerEvent(html, '[id^="rep"]', '#total-rep', this.object.system.reputation.value);
+    this._handleTrackerEvent(html, '[id^="stress"]', '#total-stress', this.object.system.stress.value);
+    this._handleTrackerEvent(html, '[id^="determination"]', '#total-determination', this.object.system.determination.value);
 
+    // Listeners related to attributes, disciplines, and rolling
+    this._activateActiveStatListeners(html);
+    this._activateStatRollListeners(html);
+  }
+  
+  /**
+   * Subroutine for registering click handlers that deal with opening
+   * item sheets
+   * 
+   * @param object html
+   * @return void
+   */
+  _activateItemEditListeners(html)
+  {
     // This allows for each item-edit image to link open an item sheet. This uses Simple Worldbuilding System Code.
     html.find('.control .edit').click((ev) => {
       const li = $(ev.currentTarget).parents('.entry');
       const item = this.actor.items.get(li.data('itemId'));
       item.sheet.render(true);
     });
-
-    // This if statement checks if the form is editable, if not it hides control used by the owner, then aborts any more of the script.
-    if (!this.options.editable) {
-      // This hides the ability to Perform an Attribute Test for the character.
-      for (i = 0; i < html.find('.check-button').length; i++) {
-        html.find('.check-button')[i].style.display = 'none';
-      }
-      // This hides all toggle, add, and delete item images.
-      for (i = 0; i < html.find('.control.create').length; i++) {
-        html.find('.control.create')[i].style.display = 'none';
-      }
-      for (i = 0; i < html.find('.control .delete').length; i++) {
-        html.find('.control .delete')[i].style.display = 'none';
-      }
-      for (i = 0; i < html.find('.control.toggle').length; i++) {
-        html.find('.control.delete')[i].style.display = 'none';
-      }
-      // This hides all attribute and discipline check boxes (and titles)
-      for (i = 0; i < html.find('.selector').length; i++) {
-        html.find('.selector')[i].style.display = 'none';
-      }
-      for (i = 0; i < html.find('.selector').length; i++) {
-        html.find('.selector')[i].style.display = 'none';
-      }
-      // Remove hover CSS from clickables that are no longer clickable.
-      for (i = 0; i < html.find('.box').length; i++) {
-        html.find('.box')[i].classList.add('unset-clickables');
-      }
-      for (i = 0; i < html.find('.rollable').length; i++) {
-        html.find('.rollable')[i].classList.add('unset-clickables');
-      }
-
-      return;
-    };
-
-    // This toggles whether the value is used or not.
-    html.find('.control.toggle').click((ev) => {
-      let itemId = ev.currentTarget.closest(".entry").dataset.itemId;
-      let item = this.actor.items.get(itemId);
-      let state = item.data.used;
-      if (state) {
-        item.data.used = false;
-        $(ev.currentTarget).children()[0].classList.remove('fa-toggle-on');
-        $(ev.currentTarget).children()[0].classList.add('fa-toggle-off');
-        $(ev.currentTarget).parents('.entry')[0].setAttribute('data-item-used', 'false');
-        $(ev.currentTarget).parents('.entry')[0].style.textDecoration = 'none';
-      } else {
-        item.data.used = true;
-        $(ev.currentTarget).children()[0].classList.remove('fa-toggle-off');
-        $(ev.currentTarget).children()[0].classList.add('fa-toggle-on');
-        $(ev.currentTarget).parents('.entry')[0].setAttribute('data-item-used', 'true');
-        $(ev.currentTarget).parents('.entry')[0].style.textDecoration = 'line-through';
-      }
-      return this.actor.items.get(itemId).update({["data.used"]: getProperty(item.data, "data.used")});
-    });
-
-    // This allows for all items to be rolled, it gets the current targets type and id and sends it to the rollGenericItem function.
-    html.find('.rollable').click((ev) =>{
-      const itemType = $(ev.currentTarget).parents('.entry')[0].getAttribute('data-item-type');
-      const itemId = $(ev.currentTarget).parents('.entry')[0].getAttribute('data-item-id');
-      staActor.rollGenericItem(ev, itemType, itemId, this.actor);
-    });
-
-    html.find('.chat').click((ev) =>{
-      const itemType = $(ev.currentTarget).parents('.entry')[0].getAttribute('data-item-type');
-      const itemId = $(ev.currentTarget).parents('.entry')[0].getAttribute('data-item-id');
-      staActor.rollGenericItem(ev, itemType, itemId, this.actor);
-    });
-
-    // Allows item-create images to create an item of a type defined individually by each button. This uses code found via the Foundry VTT System Tutorial.
-    html.find('.control.create').click((ev) => {
-      ev.preventDefault();
-      const header = ev.currentTarget;
-      const type = header.dataset.type;
-      const data = duplicate(header.dataset);
-      const name = `New ${type.capitalize()}`;
-      if (type == 'armor' && armorNumber >= 1) {
-        ui.notifications.info('The current actor has an equipped armor already. Adding unequipped.');
-        data.equipped = false;
-      }
-      const itemData = {
-        name: name,
-        type: type,
-        data: data,
-        img: game.sta.defaultImage
-      };
-      delete itemData.data['type'];
-      if (isNewerVersion(versionInfo,"0.8.-1")) return this.actor.createEmbeddedDocuments("Item",[(itemData)]);
-      else return this.actor.createOwnedItem(itemData);
-    });
-
-    // Allows item-delete images to allow deletion of the selected item. This uses Simple Worldbuilding System Code.
-    html.find('.control .delete').click((ev) => {
-      const li = $(ev.currentTarget).parents('.entry');
-      const r = confirm('Are you sure you want to delete ' + li[0].getAttribute('data-item-value') + '?');
-      if (r == true) {
-        if (isNewerVersion(versionInfo,"0.8.-1")) this.actor.deleteEmbeddedDocuments("Item",[li.data("itemId")]);
-        else this.actor.deleteOwnedItem(li.data("itemId"));
-        li.slideUp(200, () => this.render(false));
-      }
-    });
-
-    // Reads if a reputation track box has been clicked, and if it has will either: set the value to the clicked box, or reduce the value by one. 
-    // This check is dependent on various requirements, see comments in code.
-    html.find('[id^="rep"]').click((ev) => {
-      let total = '';
-      const newTotalObject = $(ev.currentTarget)[0];
-      const newTotal = newTotalObject.id.replace(/\D/g, '');
-      // data-selected stores whether the track box is currently activated or not. This checks that the box is activated
-      if (newTotalObject.getAttribute('data-selected') === 'true') {
-        // Now we check that the "next" track box is not activated. 
-        // If there isn't one, or it isn't activated, we only want to decrease the value by 1 rather than setting the value.
-        const nextCheck = 'rep-' + (parseInt(newTotal) + 1);
-        if (!html.find('#'+nextCheck)[0] || html.find('#'+nextCheck)[0].getAttribute('data-selected') != 'true') {
-          html.find('#total-rep')[0].value = html.find('#total-rep')[0].value - 1;
-          this.submit();
-        // If it isn't caught by the if, the next box is likely activated. If something happened, its safer to set the value anyway.
-        } else {
-          total = html.find('#total-rep')[0].value;
-          if (total != newTotal) {
-            html.find('#total-rep')[0].value = newTotal;
-            this.submit();
-          }
-        }
-      // If the clicked box wasn't activated, we need to activate it now.
-      } else {
-        total = html.find('#total-rep')[0].value;
-        if (total != newTotal) {
-          html.find('#total-rep')[0].value = newTotal;
-          this.submit();
-        }
-      }
-    });
-
-    // Reads if a stress track box has been clicked, and if it has will either: set the value to the clicked box, or reduce the value by one.
-    // See line 186-220 for a more detailed break down on the context of each scenario. Stress uses the same logic.
-    html.find('[id^="stress"]').click((ev) => {
-      let total = '';
-      const newTotalObject = $(ev.currentTarget)[0];
-      const newTotal = newTotalObject.id.substring(7);
-      if (newTotalObject.getAttribute('data-selected') === 'true') {
-        const nextCheck = 'stress-' + (parseInt(newTotal) + 1);
-        if (!html.find('#'+nextCheck)[0] || html.find('#'+nextCheck)[0].getAttribute('data-selected') != 'true') {
-          html.find('#total-stress')[0].value = html.find('#total-stress')[0].value - 1;
-          this.submit();
-        // If it isn't caught by the if, the next box is likely activated. If something happened, its safer to set the value anyway.
-        } else {
-          total = html.find('#total-stress')[0].value;
-          if (total != newTotal) {
-            html.find('#total-stress')[0].value = newTotal;
-            this.submit();
-          }
-        }
-      // If the clicked box wasn't activated, we need to activate it now.
-      } else {
-        total = html.find('#total-stress')[0].value;
-        if (total != newTotal) {
-          html.find('#total-stress')[0].value = newTotal;
-          this.submit();
-        }
-      }
-    });
-
-    // Reads if a determination track box has been clicked, and if it has will either: set the value to the clicked box, or reduce the value by one.
-    // See line 186-220 for a more detailed break down on the context of each scenario. Determination uses the same logic.
-    html.find('[id^="determination"]').click((ev) => {
-      let total = '';
-      const newTotalObject = $(ev.currentTarget)[0];
-      const newTotal = newTotalObject.id.replace(/\D/g, '');
-      if (newTotalObject.getAttribute('data-selected') === 'true') {
-        const nextCheck = 'determination-' + (parseInt(newTotal) + 1);
-        if (!html.find('#'+nextCheck)[0] || html.find('#'+nextCheck)[0].getAttribute('data-selected') != 'true') {
-          html.find('#total-determination')[0].value = html.find('#total-determination')[0].value - 1;
-          this.submit();
-        // If it isn't caught by the if, the next box is likely activated. If something happened, its safer to set the value anyway.
-        } else {
-          total = html.find('#total-determination')[0].value;
-          if (total != newTotal) {
-            html.find('#total-determination')[0].value = newTotal;
-            this.submit();
-          }
-        }
-      // If the clicked box wasn't activated, we need to activate it now.
-      } else {
-        total = html.find('#total-determination')[0].value;
-        if (total != newTotal) {
-          html.find('#total-determination')[0].value = newTotal;
-          this.submit();
-        }
-      }
-    });
-
-    // This is used to clean up all the HTML that comes from displaying outputs from the text editor boxes. There's probably a better way to do this but the quick and dirty worked this time.
-    $.each($('[id^=talent-tooltip-text-]'), function(index, value) {
-      const beforeDescription = value.innerHTML;
-      const decoded = TextEditor.decodeHTML(beforeDescription);
-      const prettifiedDescription = TextEditor.previewHTML(decoded, 1000);
-      $('#' + value.id).html(prettifiedDescription);
-    });
-
-
-    html.find('.talent-tooltip-clickable').click((ev) => {
-      const talentId = $(ev.currentTarget)[0].id.substring('talent-tooltip-clickable-'.length);
-      const currentShowingTalentId = $('.talent-tooltip-container:not(.hide)')[0] ? $('.talent-tooltip-container:not(.hide)')[0].id.substring('talent-tooltip-container-'.length) : null;
-            
-      if (talentId == currentShowingTalentId) {
-        $('#talent-tooltip-container-' + talentId).addClass('hide').removeAttr('style');
-      } else {
-        $('.talent-tooltip-container').addClass('hide').removeAttr('style');
-        $('#talent-tooltip-container-' + talentId).removeClass('hide').height($('#talent-tooltip-text-' + talentId)[0].scrollHeight + 5);
-      }
-    });
-
-    // Turns the Attribute checkboxes into essentially a radio button. It removes any other ticks, and then checks the new attribute.
-    // Finally a submit is required as data has changed.
-    html.find('.selector.attribute').click((ev) => {
-      for (i = 0; i <= 5; i++) {
-        html.find('.selector.attribute')[i].checked = false;
-      }
-      $(ev.currentTarget)[0].checked = true;
-      this.submit();
-    });
-
-    // Turns the Discipline checkboxes into essentially a radio button. It removes any other ticks, and then checks the new discipline.
-    // Finally a submit is required as data has changed.
-    html.find('.selector.discipline').click((ev) => {
-      for (i = 0; i <= 5; i++) {
-        html.find('.selector.discipline')[i].checked = false;
-      }
-      $(ev.currentTarget)[0].checked = true;
-      this.submit();
-    });
-
-    // If the check-button is clicked it grabs the selected attribute and the selected discipline and fires the method rollAttributeTest. See actor.js for further info.
-    html.find('.check-button.attribute').click((ev) => {
-      let selectedAttribute = '';
-      let selectedAttributeValue = '';
-      let selectedDiscipline = '';
-      let selectedDisciplineValue = '';
-      for (i = 0; i <= 5; i++) {
-        if (html.find('.selector.attribute')[i].checked === true) {
-          selectedAttribute = html.find('.selector.attribute')[i].id;
-          selectedAttribute = selectedAttribute.slice(0, -9);
-          selectedAttributeValue = html.find('#'+selectedAttribute)[0].value;
-        }
-      }
-      for (i = 0; i <= 5; i++) {
-        if (html.find('.selector.discipline')[i].checked === true) {
-          selectedDiscipline = html.find('.selector.discipline')[i].id;
-          selectedDiscipline = selectedDiscipline.slice(0, -9);
-          selectedDisciplineValue = html.find('#'+selectedDiscipline)[0].value;
-        }
-      }
-            
-      staActor.rollAttributeTest(ev, selectedAttribute,
-        parseInt(selectedAttributeValue), selectedDiscipline,
-        parseInt(selectedDisciplineValue), 2, this.actor);
-    });
-        
-    // If the check-button is clicked it fires the method challenge roll method. See actor.js for further info.
-    html.find('.check-button.challenge').click((ev) => {
-      staActor.rollChallengeRoll(ev, 'Generic', 0, this.actor);
-    });
-
-    html.find('.rollable.challenge').click((ev) => {
-      const damage = parseInt(ev.target.parentElement.nextElementSibling.nextElementSibling.innerText) ?
-        parseInt(ev.target.parentElement.nextElementSibling.nextElementSibling.innerText) : 0;
-      staActor.rollChallengeRoll(ev, ev.target.dataset.itemName,
-        damage, this.actor);
-    });
-
-    html.find('.reroll-result').click((ev) => {
-      let selectedAttribute = '';
-      let selectedAttributeValue = '';
-      let selectedDiscipline = '';
-      let selectedDisciplineValue = '';
-      for (i = 0; i <= 5; i++) {
-        if (html.find('.selector.attribute')[i].checked === true) {
-          selectedAttribute = html.find('.selector.attribute')[i].id;
-          selectedAttribute = selectedAttribute.slice(0, -9);
-          selectedAttributeValue = html.find('#'+selectedAttribute)[0].value;
-        }
-      }
-      for (i = 0; i <= 5; i++) {
-        if (html.find('.selector.discipline')[i].checked === true) {
-          selectedDiscipline = html.find('.selector.discipline')[i].id;
-          selectedDiscipline = selectedDiscipline.slice(0, -9);
-          selectedDisciplineValue = html.find('#'+selectedDiscipline)[0].value;
-        }
-      }
-            
-      staActor.rollAttributeTest(ev, selectedAttribute,
-        parseInt(selectedAttributeValue), selectedDiscipline,
-        parseInt(selectedDisciplineValue), null, this.actor);
-    });
-
-    $(html).find('[id^=character-weapon-]').each(function(_, value){
-      let weaponDamage = parseInt(value.dataset.itemDamage);
-      let securityValue = parseInt(html.find('#security')[0].value);
-      let attackDamageValue = weaponDamage + securityValue;
-      value.getElementsByClassName('damage')[0].innerText = attackDamageValue;
-    });
-
   }
+  
+  /**
+   * Lock controls, such as when the viewing user doesn't have 
+   * edit access to this sheet
+   * 
+   * @param object html
+   * @return  void
+   */
+   _lockControls(html)
+   {
+     for (let element of html.find('.check-button, .control.create, .control.delete, .control.toggle, .selector'))
+     {
+       element.style.display = 'none';
+     }
+     for (let element of html.find('.box, .rollable'))
+     {
+       element.classList.add('unset-clickables');
+     }
+   }
+   
+   /**
+    * Activates listeners for the Value sliders that shows whether or
+    * not they have been used.
+    * 
+    * @param  object html
+    * @return void
+    */
+    _activateValueUseListeners(html)
+    {
+      html.find('.control.toggle').click(async (ev) => {
+        const itemId = ev.currentTarget.closest(".entry").dataset.itemId;
+        const item = this.actor.items.get(itemId);
+        const state = item.system.used;
+        await item.update({"system.used": !state});
+        this.render();
+      });
+    }
+    
+    /**
+     * Makes the buttons next to each item interactable, triggering a
+     * roll when clicked
+     * 
+     * @param object html
+     * @return  void
+     */
+    _activateRollableListeners(html)
+    {
+      html.find('.rollable, .chat').click((ev) => {
+        const itemType = $(ev.currentTarget).parents('.entry')[0].getAttribute('data-item-type');
+        const itemId = $(ev.currentTarget).parents('.entry')[0].getAttribute('data-item-id');
+        // TODO: Redo how rolls are performed
+        const staActor = new STASharedActorFunctions();
+        staActor.rollGenericItem(ev, itemType, itemId, this.actor);
+      });
+    }
+    
+    /**
+     * Allows item-create images to create an item of a type defined 
+     * individually by each button.
+     * 
+     * This uses code found via the Foundry VTT System Tutorial.
+     * 
+     * @param object html
+     * @return  void
+     */
+    _activateItemCreateListeners(html)
+    {
+      html.find('.control.create').click(async (ev) => {
+        ev.preventDefault();
+        const header = ev.currentTarget;
+        const type = header.dataset.type;
+        const name = `New ${type.capitalize()}`; // TODO: Localize
+        const itemData = {
+          name: name,
+          type: type,
+          img: game.sta.defaultImage
+        };
+        if (type == 'armor')
+        {
+          itemData.equipped = true;
+          for (let item of this.actor.items)
+          {
+            if (item.type == 'armor' && item.equipped)
+            {
+              ui.notifications.info('The current actor already had armor equipped. Adding unequipped.'); // TODO: Localize
+              itemData.equipped = false;
+              break;
+            }
+          }
+        }
+        return this.actor.createEmbeddedDocuments("Item", [(itemData)]);
+      });
+    }
+
+    /**
+     * Allows item-delete images to allow deletion of the selected item.
+     * This uses Simple Worldbuilding System Code.
+     * 
+     * @param object html
+     * @return  void
+     */
+    _activateItemDeleteListeners(html)
+    {
+      html.find('.control .delete').click((ev) => {
+        const li = $(ev.currentTarget).parents('.entry');
+        if (confirm('Are you sure you want to delete ' + li[0].getAttribute('data-item-value') + '?')) // TODO: Localize
+        {
+          this.actor.deleteEmbeddedDocuments("Item",[li.data("itemId")]);
+          li.slideUp(200, () => this.render(false));
+        }
+      });
+    }    
+
+    /**
+     * Handle a tracker-like listener
+     * 
+     * @param object html             The full Document html
+     * @param string clickSelector    The selector to register the handler on
+     * @param string  inputSelector   The hidden input that tracks the actual value
+     * @param int currentValue        The current value on the actor
+     * @return  void
+     */
+    _handleTrackerEvent(html, clickSelector, inputSelector, currentValue)
+    {
+      html.find(clickSelector).click(async (ev) => {
+        let newTotal = ev.currentTarget?.dataset?.value;
+        if (typeof newTotal == 'undefined') // Can't do anything
+          return;
+        /** 
+         * If the one clicked is the same as the current value, treat it
+         * as a "turn off" decrement
+         */
+        if (currentValue == newTotal)
+        {
+          newTotal -= 1;
+        }
+        const propertyContainer = html.find(inputSelector)[0];
+        propertyContainer.value = newTotal;
+        await this.submit();
+      });
+    }
+    
+    /**
+     * Handle user clicking on a talent to hide/show the talent summary
+     * 
+     * @param object html
+     * @return  void
+     */
+    _handleTalentClick(html)
+    {
+      html.find('.talent-tooltip-clickable').click((ev) => {
+        const clickedTalentItem = $(ev.currentTarget).closest('li.row.entry');
+        const clickedTalentId = clickedTalentItem.data('itemId');
+        const clickedTalentTextContainer = clickedTalentItem.siblings('.talent-tooltip-container').filter(function() { return this.dataset?.itemId == clickedTalentId; });
+
+        const currentlyDisplayedTalentElement = $('.talent-tooltip-container:not(.hide)');
+        const currentTalentId = currentlyDisplayedTalentElement.data('itemId') || null;
+
+        // If we clicked ourself, hide our container
+        if (clickedTalentId == currentTalentId)
+        {
+          clickedTalentTextContainer.addClass('hide');
+        }
+        else
+        {
+          // Hide all others, then show us
+          $('.talent-tooltip-container').addClass('hide');
+          clickedTalentTextContainer.removeClass('hide');
+        }
+      });
+    }
+    
+    /**
+     * Handle user clicking on an attribute/discipline to make it the
+     * chosen "active" one for rolls
+     * 
+     * @param object html
+     * @return void
+     */
+    _activateActiveStatListeners(html)
+    {
+      html.find('.stat.row .text.list-entry').click((ev) => {
+        try
+        {
+          let statChosen = $(ev.currentTarget).siblings('input.field').attr('id');
+          let statType = $(ev.currentTarget).siblings('input.field').data('statType');
+          let statHiddenInput = $('input#use-'+statType);
+          statHiddenInput.val(statChosen);
+          this.submit();
+        }
+        catch (error)
+        {
+          console.error(error);
+        }
+      });
+    }
+    
+    /**
+     * Fire off dice rolls based on elements of the UI that should do so
+     * 
+     * @param object html
+     * @return  void
+     */
+    _activateStatRollListeners(html)
+    {
+      html.find('.check-button.attribute').click(async (ev) => {
+        const selectedAttribute = html.find('input#use-attribute').val();
+        const selectedDiscipline = html.find('input#use-discipline').val();
+        return this.actor.performTaskRoll(selectedAttribute, selectedDiscipline);
+      });
+          
+      // If the check-button is clicked it fires the method challenge roll method. See actor.js for further info.
+      html.find('.check-button.challenge').click(async (ev) => {
+        let r = new STAChallengeRoll();
+        await r.evaluate();
+        /*
+        staActor.rollChallengeRoll(ev, 'Generic', 0, this.actor);
+        */
+      });
+
+      html.find('.rollable.challenge').click((ev) => {
+        /*
+        const damage = parseInt(ev.target.parentElement.nextElementSibling.nextElementSibling.innerText) ?
+          parseInt(ev.target.parentElement.nextElementSibling.nextElementSibling.innerText) : 0;
+        staActor.rollChallengeRoll(ev, ev.target.dataset.itemName, damage, this.actor);
+        */
+      });
+
+      html.find('.reroll-result').click((ev) => {
+        /*
+        let selectedAttribute = '';
+        let selectedAttributeValue = '';
+        let selectedDiscipline = '';
+        let selectedDisciplineValue = '';
+        for (i = 0; i <= 5; i++) {
+          if (html.find('.selector.attribute')[i].checked === true) {
+            selectedAttribute = html.find('.selector.attribute')[i].id;
+            selectedAttribute = selectedAttribute.slice(0, -9);
+            selectedAttributeValue = html.find('#'+selectedAttribute)[0].value;
+          }
+        }
+        for (i = 0; i <= 5; i++) {
+          if (html.find('.selector.discipline')[i].checked === true) {
+            selectedDiscipline = html.find('.selector.discipline')[i].id;
+            selectedDiscipline = selectedDiscipline.slice(0, -9);
+            selectedDisciplineValue = html.find('#'+selectedDiscipline)[0].value;
+          }
+        }
+              
+        staActor.rollAttributeTest(ev, selectedAttribute,
+          parseInt(selectedAttributeValue), selectedDiscipline,
+          parseInt(selectedDisciplineValue), null, this.actor);
+        */
+      });
+    }
 }

@@ -1,0 +1,635 @@
+.sta.sheet.actor .header
+{
+  display: flex;
+}
+.sta.sheet.actor .lcars-column
+{
+  flex: 10%;
+  display: flex;
+  flex-flow: column;
+}
+.sta.sheet.actor .lcars-column .lcars-header-block1
+{
+  flex: 3;
+  background-color: var(--color-violet-lavender-indigo);
+  border-bottom: 4px solid var(--color-black-smoky);
+}
+.sta.sheet.actor .lcars-column .lcars-header-block2
+{
+  flex: 7;
+  background-color: var(--color-blue-ultramarine);
+  border-bottom: 4px solid var(--color-black-smoky);
+}
+.sta.sheet.actor .lcars-column .lcars-attribute-title-block
+{
+  background-color: var(--color-blue-gray-independence);
+  border-bottom-left-radius: 40px;
+  flex: 0 1 47px;
+}
+  .sta.sheet.actor .lcars-column .lcars-item1-connect-block,
+.sta.sheet.actor .lcars-column .lcars-item2-connect-block
+{
+  flex: 0 1 40px;
+  background-color: var(--color-blue-gray-independence);
+  border-top-left-radius: 40px;
+}
+.sta.sheet.actor .lcars-column .lcars-item1-top-block
+{
+  flex: 0 1 30px;
+  background-color: transparent;
+  border-bottom: 5px solid var(--color-black-smoky);
+}
+.sta.sheet.actor .lcars-column .lcars-item2-top-block
+{
+  flex: 0 1 30px;
+  background-color: var(--color-blue-cornflower);
+  border-bottom: 5px solid var(--color-black-smoky);
+}
+.sta.sheet.actor .lcars-column .lcars-attribute-general-block1
+{
+  background-color: var(--color-violet-x11);
+  flex: 1;
+  border-top-left-radius: 40px;
+  border-top: 5px solid var(--color-black-smoky);
+}
+.sta.sheet.actor .lcars-column .lcars-attribute-general-block2
+{
+  background-color: var(--color-orange-safety);
+  flex: 2;
+  border-top: 5px solid var(--color-black-smoky);
+}
+.sta.sheet.actor .lcars-column .lcars-attribute-general-block3
+{
+  background-color: var(--color-violet-lavender-indigo);
+  flex: 1;
+  border-top: 5px solid var(--color-black-smoky);
+  border-bottom-left-radius: 40px;
+}
+.sta.sheet.actor .lcars-column .lcars-item1-general-block
+{
+  background-color: var(--color-blue-cornflower);
+  flex: 1;
+  border-top: 5px solid var(--color-black-smoky);
+}
+.sta.sheet.actor .lcars-column .lcars-item2-general-block1
+{
+  background-color: var(--color-red-ferrari);
+  flex: 1;
+  border-top: 5px solid var(--color-black-smoky);
+}
+.sta.sheet.actor .lcars-column .lcars-item2-general-block2
+{
+  background-color: var(--color-yellow-chrome);
+  flex: 2;
+  border-top: 5px solid var(--color-black-smoky);
+}
+.sta.sheet.actor .lcars-column .lcars-header-extendedtask1
+{
+  background-color: var(--color-violet-x11);
+  border-bottom: 5px solid var(--color-black-smoky);
+  flex: 1;
+  width: 100%;
+}
+.sta.sheet.actor .lcars-column .lcars-header-extendedtask2
+{
+  background-color: var(--color-yellow-chrome);
+  border-bottom: 5px solid var(--color-black-smoky);
+  flex: 1;
+  width: 100%;
+}
+.sta.sheet.actor .lcars-column .lcars-header-extendedtask3
+{
+  background-color: var(--color-blue-gray-independence);
+  flex: 1;
+  width: 100%;
+}
+.sta.sheet.actor .lcars-column .lcars-header-extendedtask4
+{
+  background-color: var(--color-blue-gray-independence);
+  flex: 0 1 27px;
+  width: 100%;
+  border-bottom: 5px solid var(--color-black-smoky);
+  border-bottom-left-radius: 40px;
+}
+.sta.sheet.actor .lcars-column .lcars-body-extendedtask1
+{
+  background-color: var(--color-black-smoky);
+  flex: 0 1 33px;
+  width: 100%;
+}
+.sta.sheet.actor .lcars-column .lcars-body-extendedtask2
+{
+  background-color: var(--color-blue-gray-independence);
+  flex: 1 1 auto;
+  width: 100%;
+  border-top-left-radius: 40px;
+}
+
+/* Actor Sheet */
+.sta.sheet.actor
+{
+  /* Colors */
+  /* Trackbars */
+  /* Layout - Main/Attributes */
+  /* Layout - Owned Items */
+  /* Extended Tasks */
+}
+.sta.sheet.actor .title
+{
+  height: 30px;
+  color: var(--color-yellow-bright-crayola);
+}
+.sta.sheet.actor .list-entry,
+.sta.sheet.actor .editor,
+.sta.sheet.actor .label
+{
+  color: var(--color-blue-green-maximum);
+}
+.sta.sheet.actor .editor .editor-edit
+{
+  color: var(--color-black);
+}
+.sta.sheet.actor .tox.tox-tinymce .tox-edit-area__iframe
+{
+  background-color: var(--color-white);
+}
+.sta.sheet.actor .secondary-title
+{
+  color: var(--color-black);
+}
+.sta.sheet.actor .numeric-entry,
+.sta.sheet.actor .text-entry
+{
+  color: var(--color-violet-pale);
+}
+.sta.sheet.actor .track
+{
+  display: flex;
+  flex-direction: row;
+}
+.sta.sheet.actor .track .bar:not(.extendedtask)
+{
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+}
+.sta.sheet.actor .track .bar .box
+{
+  height: 14px;
+  border: 1px solid var(--color-blue-gray-dark);
+  border-radius: 14px;
+  border-collapse: collapse;
+  padding: 0px;
+  display: block;
+  font-size: 8pt;
+  text-align: center;
+  font-weight: bold;
+  flex-grow: 1;
+}
+.sta.sheet.actor .track .bar .box:hover
+{
+  box-shadow: 0 0 8px var(--color-white-peach);
+  cursor: pointer;
+}
+.sta.sheet.actor .track .bar .box.stress
+{
+  background-color: var(--color-red-ferrari);
+  color: var(--color-black);
+}
+.sta.sheet.actor .track .bar .box.stress.selected
+{
+  background-color: var(--color-blue-bluebonnet);
+  color: var(--color-white-near);
+}
+.sta.sheet.actor .track .bar .box.determination
+{
+  background-color: var(--color-black-chocolate);
+  color: var(--color-white-near);
+}
+.sta.sheet.actor .track .bar .box.determination.selected
+{
+  background-color: var(--color-yellow-sunglow);
+  color: var(--color-black);
+}
+.sta.sheet.actor .track .bar .box.rep
+{
+  background-color: var(--color-black-chocolate);
+  color: var(--color-white-near);
+}
+.sta.sheet.actor .track .bar .box.rep.selected
+{
+  background-color: var(--color-red-amaranth);
+  color: var(--color-black);
+}
+.sta.sheet.actor .track .bar .box.shields
+{
+  background-color: var(--color-red-ferrari);
+  color: var(--color-black);
+}
+.sta.sheet.actor .track .bar .box.shields.selected
+{
+  background-color: var(--color-blue-bluebonnet);
+  color: var(--color-white-near);
+}
+.sta.sheet.actor .track .bar .box.power
+{
+  background-color: var(--color-black-chocolate);
+  color: var(--color-white-near);
+}
+.sta.sheet.actor .track .bar .box.power.selected
+{
+  background-color: var(--color-yellow-sunglow);
+  color: var(--color-black);
+}
+.sta.sheet.actor .track .bar .box.crew
+{
+  background-color: var(--color-black-chocolate);
+  color: var(--color-white-near);
+}
+.sta.sheet.actor .track .bar .box.crew.selected
+{
+  background-color: var(--color-red-amaranth);
+  color: var(--color-black);
+}
+.sta.sheet.actor .track .bar .box.extendedtask
+{
+  height: 28px;
+  font-size: 16pt;
+  background-color: var(--color-black-chocolate);
+  color: var(--color-white-near);
+}
+.sta.sheet.actor .track .bar .box.extendedtask.selected
+{
+  background-color: var(--color-yellow-sunglow);
+  color: var(--color-black);
+}
+.sta.sheet.actor .header-fields
+{
+  flex: 90%;
+  top: 0;
+  padding: 5px;
+}
+.sta.sheet.actor .header-fields .row .column
+{
+  display: flex;
+  width: 100%;
+}
+.sta.sheet.actor .header-fields .section.reputation .title
+{
+  font-size: 14px;
+}
+.sta.sheet.actor .main
+{
+  flex: 1;
+}
+.sta.sheet.actor .main .row
+{
+  max-height: 300px;
+}
+.sta.sheet.actor .main .row .limited-only
+{
+  height: 20px;
+}
+.sta.sheet.actor .main .row .column
+{
+  flex: 30%;
+  overflow-y: auto;
+}
+.sta.sheet.actor .main .row .column .section
+{
+  /* Attributes/Disciplines */
+}
+.sta.sheet.actor .main .row .column .section .header.row
+{
+  background-color: var(--color-blue-gray-independence);
+  color: var(--color-black);
+  font-weight: bold;
+  padding-left: 2px;
+  padding-right: 2px;
+  border-bottom: 2px solid var(--color-black-smoky);
+}
+.sta.sheet.actor .main .row .column .section .profile-img
+{
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  object-position: 50% 0;
+}
+.sta.sheet.actor .main .row .column .section .title
+{
+  font-size: 18pt;
+}
+.sta.sheet.actor .main .row .column .section .row
+{
+  display: flex;
+  flex-direction: row;
+}
+.sta.sheet.actor .main .row .column .section .entry.row
+{
+  display: flex;
+  flex-direction: row;
+}
+.sta.sheet.actor .main .row .column .section .note,
+.sta.sheet.actor .main .row .column .section .milestone,
+.sta.sheet.actor .main .row .column .section .injury
+{
+  height: 200px;
+  text-align: left;
+}
+.sta.sheet.actor .main .row .column .section .note .editor,
+.sta.sheet.actor .main .row .column .section .milestone .editor,
+.sta.sheet.actor .main .row .column .section .injury .editor
+{
+  height: 100%;
+  padding: 5px;
+}
+.sta.sheet.actor .main .row .column .section .stat.row
+{
+  align-items: stretch;
+  border: 1rem solid var(--color-blue-dark);
+  border-top: 0;
+  border-bottom: 0;
+  border-radius: 1rem;
+  padding: 0 0.2rem;
+  margin-bottom: 0.2rem;
+}
+.sta.sheet.actor .main .row .column .section .stat.row .field
+{
+  width: 20%;
+  flex-grow: 0;
+  text-align: center;
+}
+.sta.sheet.actor .main .row .column .section .stat.row .text
+{
+  width: unset;
+  /* background: var(--color-blue-dark); */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+  flex-shrink: 0;
+}
+.sta.sheet.actor .main .row .column .section .stat.row .text:hover {
+  /* background-color: var(--color-blue-mid); */
+}
+.sta.sheet.actor .main .row .column .section .stat.row.selected .text {
+  /* background-color: var(--color-blue-bright); */
+}
+.sta.sheet.actor .main .row .column .section .stat.row .selector-space
+{
+  width: 30px;
+}
+.sta.sheet.actor .main .row .column .section .stat.row .selector
+{
+  border: 1px solid;
+  border-collapse: collapse;
+  padding: 0px;
+  display: block;
+}
+.sta.sheet.actor .main .row .column .section .stat.row .selector:hover
+{
+  box-shadow: none;
+  cursor: pointer;
+}
+.sta.sheet.actor .main .row .column .section .check-button
+{
+  width: 75%;
+  height: 30px;
+  line-height: 30px;
+  margin: 5px 12.5%;
+  font-size: 14pt;
+  grid-column: span 2;
+}
+.sta.sheet.actor .main .row .column .section.scale,
+.sta.sheet.actor .main .row .column .section.resistance
+{
+  display: flex;
+  background-color: var(--color-violet-lavender-indigo);
+  height: 41px;
+}
+.sta.sheet.actor .main .row .column .section.scale .title,
+.sta.sheet.actor .main .row .column .section.resistance .title
+{
+  background-color: var(--color-black-smoky);
+  width: 75%;
+  margin-top: 5px;
+}
+.sta.sheet.actor .main .row .column .section.scale .field.numeric-entry,
+.sta.sheet.actor .main .row .column .section.resistance .field.numeric-entry
+{
+  width: 15%;
+  height: 30px;
+  border: none;
+  border-radius: 0px;
+  margin-top: 5px;
+  background-color: var(--color-black-smoky);
+}
+.sta.sheet.actor .main .row .column .section.scale .title
+{
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  margin-left: 10%;
+}
+.sta.sheet.actor .main .row .column .section.resistance .field.numeric-entry
+{
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  margin-right: 10%;
+}
+.sta.sheet.actor .column.left-column
+{
+  border-right: 2px solid var(--color-black-smoky);
+}
+.sta.sheet.actor .column.center-column
+{
+  border-right: 2px solid var(--color-black-smoky);
+  border-left: 2px solid var(--color-black-smoky);
+}
+.sta.sheet.actor .column.right-column
+{
+  border-left: 2px solid var(--color-black-smoky);
+}
+.sta.sheet.actor .main .row .column
+{
+    /*  Actor - Talent Tooltips */
+}
+.sta.sheet.actor .main .row .column .section.attribute,
+.sta.sheet.actor .main .row .column .section.discipline
+{
+  display: grid;
+  grid-template-columns: 50% 50%;
+}
+.sta.sheet.actor .main .row .column .section .title
+{
+  grid-column: span 2;
+}
+
+.sta.sheet.actor .main .row .column .section .row .image
+{
+  width: 26px;
+}
+.sta.sheet.actor .main .row .column .section .row .image img
+{
+  width: 24px;
+  height: 24px;
+  object-fit: cover;
+  object-position: 50% 0;
+}
+.sta.sheet.actor .main .row .column .section .row .image .rollable:hover
+{
+  content: url("/icons/svg/d20-grey.svg");
+  box-shadow: none;
+  cursor: pointer;
+}
+.sta.sheet.actor .main .row .column .section .row .image .chat:hover
+{
+  content: url("/systems/sta/assets/icons/chat-bubble.svg");
+  box-shadow: none;
+  cursor: pointer;
+}
+.sta.sheet.actor .main .row .column .section .row .image .click-to-nav
+{
+  cursor: pointer;
+}
+.sta.sheet.actor .main .row .column .section .row .control
+{
+  color: var(--color-yellow-sunglow);
+  width: 40px;
+  padding-right: 2px;
+}
+.sta.sheet.actor .main .row .column .section .row .delete
+{
+  color: var(--color-red-amaranth);
+}
+.sta.sheet.actor .main .row .column .section .row .delete:hover
+{
+  color: var(--color-white-peach);
+  text-shadow: none;
+}
+.sta.sheet.actor .main .row .column .section .row .add:hover,
+.sta.sheet.actor .main .row .column .section .row .edit:hover
+{
+  color: var(--color-red-jasper);
+  text-shadow: none;
+}
+.sta.sheet.actor .main .row .column .section .row .one-column-with-roll
+{
+  width: calc(100% - 58px);
+}
+.sta.sheet.actor .main .row .column .section .row .one-column-no-roll
+{
+  width: calc(100% - 32px);
+}
+.sta.sheet.actor .main .row .column .section .row .two-column-with-roll-primary
+{
+  width: calc((100% - 58px)*0.75);
+}
+.sta.sheet.actor .main .row .column .section .row .two-column-with-roll-secondary
+{
+  width: calc((100% - 58px)*0.25);
+}
+.sta.sheet.actor .main .row .column .section .row .column-x2
+{
+  width: 90%;
+  padding-left: 10%;
+}
+.sta.sheet.actor .main .row .column .section .row .small input
+{
+  height: 17px;
+  color: var(--color-violet-pale);
+}
+.sta.sheet.actor .main .row .column .section .row .small.disabled input
+{
+  box-shadow: none;
+  cursor: default;
+  color: grey;
+}
+.sta.sheet.actor .main .row .column .section .row .list-entry.strike-through
+{
+  text-decoration: line-through;
+}
+.sta.sheet.actor .main .row .column .value-used
+{
+  height: 17px;
+}
+.sta.sheet.actor .main .row .column .row.equipable .control
+{
+  width: 56px;
+}
+.sta.sheet.actor .main .row .column .entry.row.talent-tooltip-container
+{
+  overflow-y: hidden;
+  border: 0.5px dashed var(--color-orange-safety);
+  max-height: 200px;
+  -webkit-transition: max-height 0.5s linear, border-width 0.5s linear;
+  -moz-transition: max-height 0.5s linear, border-width 0.5s linear;
+  -ms-transition: max-height 0.5s linear, border-width 0.5s linear;
+  -o-transition: max-height 0.5s linear, border-width 0.5s linear;
+  transition: max-height 0.5s linear, border-width 0.5s linear;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sta.sheet.actor .main .row .column .entry.row.talent-tooltip-container a.content-link
+{
+  background: none;
+}
+.sta.sheet.actor .main .row .column .entry.row.talent-tooltip-container.hide
+{
+  border: 0px dashed var(--color-orange-safety);
+  max-height: 0px;
+  -webkit-transition: max-height 0.5s linear, border-width 0.5s linear;
+  -moz-transition: max-height 0.5s linear, border-width 0.5s linear;
+  -ms-transition: max-height 0.5s linear, border-width 0.5s linear;
+  -o-transition: max-height 0.5s linear, border-width 0.5s linear;
+  transition: max-height 0.5s linear, border-width 0.5s linear;
+}
+.sta.sheet.actor .row .column-headerfields1-name-extendedtasks
+{
+  width: 60%;
+  padding-left: 5%;
+  padding-right: 5%;
+}
+.sta.sheet.actor .row .column-headerfields1-name-extendedtasks .numeric-entry
+{
+  width: 50%;
+  margin-right: 25%;
+  margin-left: 25%;
+}
+.sta.sheet.actor .row .column-headerfields1-other-extendedtasks
+{
+  width: 15%;
+}
+.sta.sheet.actor .row .column-headerfields1-other-extendedtasks .numeric-entry
+{
+  width: 50%;
+  margin-right: 25%;
+  margin-left: 25%;
+}
+.sta.sheet.actor .row .column-headerfields2-extendedtasks
+{
+  width: 30%;
+  padding-left: 5%;
+  padding-right: 5%;
+  padding-top: 2px;
+}
+.sta.sheet.actor .row .column-headerfields2-extendedtasks .numeric-entry
+{
+  width: 50%;
+  margin-right: 25%;
+  margin-left: 25%;
+}
+.sta.sheet.actor .row .extendedtask.track
+{
+  width: 90%;
+}
+.sta.sheet.actor .extendedtask-divider
+{
+  background-color: var(--color-blue-gray-independence);
+  height: 17px;
+  width: 100%;
+  color: var(--color-black-smoky);
+  text-align: center;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  font-weight: bold;
+}

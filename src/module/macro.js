@@ -1,5 +1,5 @@
 import {
-  STARoll
+  STATaskRoll, STAChallengeRoll
 } from './roll.js';
 
 export function attributeTest(actor, usingFocus, usingDetermination,

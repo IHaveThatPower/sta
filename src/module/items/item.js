@@ -3,6 +3,7 @@ import {
 } from '../actors/actor.js';
 
 export class STAItem extends Item {
+	/*
   // Augment basic Item data model with additional dynamic data.
   prepareData() {
     const itemData = this;
@@ -11,14 +12,15 @@ export class STAItem extends Item {
     
     if (!this.img) this.img = game.sta.defaultImage;
 
-    super.prepareData();
+    return super.prepareData();
   }
-  
+  */
   /**
    * Handle clickable rolls.
    * @param {Event} event   The originating click event
    * @private
    */
+   /*
   async roll() {}
 
   static chatListeners(html) {
@@ -49,4 +51,5 @@ export class STAItem extends Item {
 
     staActor.rollChallengeRoll(event, null, null, speaker);
   }
+  */
 }

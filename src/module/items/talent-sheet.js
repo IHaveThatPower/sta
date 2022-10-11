@@ -24,11 +24,14 @@ export class STATalentSheet extends ItemSheet {
   /* -------------------------------------------- */
 
   /** @override */
-  getData() {
+  async getData(options) {
+    const context = super.getData(options);
     const data = this.object;
-    data.dtypes = ['String', 'Number', 'Boolean'];
-
-    return data;
+    if (data?.system?.description)
+    {
+      data.system.description = await TextEditor.enrichHTML(data.system.description, {'async': true});
+    }
+    return {...context, ...data};
   }
 
   /* -------------------------------------------- */

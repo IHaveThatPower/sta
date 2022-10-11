@@ -1,5 +1,8 @@
 // Import Modules
 import {
+  STATaskRoll, STAChallengeRoll
+} from './roll.js';
+import {
   STAActor
 } from './actors/actor.js';
 import {
@@ -50,6 +53,66 @@ import {
 /*  Foundry VTT Initialization                  */
 /* -------------------------------------------- */
 
+/**
+ * Repeat a block from either 0 or 1 to the specified value.
+ * 
+ * @param  int times      Final number
+ * @param  bool includeZero  Whether we start at 0 or 1
+ * @return  string
+ */
+Handlebars.registerHelper('repeat', function ()
+{
+  if (arguments.length <= 1) // We were only passed the default options
+    throw new Error("Must supply at least a number of times to repeat");
+  const times = arguments[0];
+  const includeZero = (arguments.length == 3) ? arguments[1] : false;
+  const options = arguments[arguments.length - 1];
+  let data = {};
+  if (options.data)
+    data = Handlebars.createFrame(options.data);
+  
+  let content = [];
+  let i = includeZero ? 0 : 1;
+  for (i; i <= times; i++)
+  {
+    if (data)
+    {
+      data.index = i;
+    }
+    content.push(options.fn(i, {data: data}));
+  }
+  return content.join('');
+});
+
+/**
+ * Add two numbers together
+ * 
+ * @param  float num1    First Number
+ * @param  float num2    Second number
+ * @return  float
+ */
+Handlebars.registerHelper('add', function (num1, num2)
+{
+  if (isNaN(Number(num1)))
+    num1 = 0;
+  if (isNaN(Number(num2)))
+    num2 = 0;
+  return (Number(num1) + Number(num2));
+});
+
+/**
+ * Replace an instance of a string with another string
+ * 
+ * @param string haystack
+ * @param string needle
+ * @param string replacement
+ * @return string
+ */
+Handlebars.registerHelper('replace', function (haystack, needle, replacement)
+{
+  return haystack.replace(needle, replacement);
+});
+
 Hooks.once('init', function() {
   let versionInfo = game.world.coreVersion;
   // Splash Screen
@@ -62,12 +125,15 @@ Hooks.once('init', function() {
      *******.:::::::::.*******       
    ********.:::::::::::.********     
   ********.:::::::::::::.********    
-  *******.::::::'***\::::.*******    
+  *******.::::::'***\`::::.*******    
   ******.::::'*********\`::.******    
    ****.:::'*************\`:.****
      *.::'*****************\`.*
      .:'  ***************    .
     .`);
+  /**
+   * ` /**
+   **/
 
 
   // Create a namespace within the game global
@@ -111,8 +177,16 @@ Hooks.once('init', function() {
   //   };
 
   // Define custom Entity classes
-  CONFIG.Actor.entityClass = STAActor;
-  CONFIG.Item.entityClass = STAItem;
+  CONFIG.Actor.documentClass = STAActor;
+  CONFIG.Item.documentClass = STAItem;
+  
+  // Define custom Roll classes
+  CONFIG.Dice.STATaskRoll = STATaskRoll;
+  CONFIG.Dice.STAChallengeRoll = STAChallengeRoll;
+
+  // Register Roll Extensions
+  CONFIG.Dice.rolls.push(STATaskRoll);
+  CONFIG.Dice.rolls.push(STAChallengeRoll);
 
   // Register sheet application classes
   Actors.unregisterSheet('core', ActorSheet);
@@ -159,7 +233,6 @@ Hooks.once('init', function() {
     types: ['smallcraftcontainer'],
   });
 
-
   // Register system settings
   game.settings.register('sta', 'multipleComplications', {
     name: 'Multiple Complications:',
@@ -202,7 +275,7 @@ Hooks.once('init', function() {
 
   game.settings.register('sta', 'maxNumberOfReputation', {
     name: 'Maximum amount of Reputation:',
-    hint: 'Max number of reputation that can be given to a character. 10 is default.',
+    hint: 'Max number of reputation that can be given to a character. 20 is default.',
     scope: 'world',
     type: Number,
     default: 20,
@@ -222,19 +295,37 @@ Hooks.once('init', function() {
     default: 0,
     config: false
   });
+});
 
-  Hooks.on('renderChatLog', (app, html, data) =>
-    STAItem.chatListeners(html)
-  );
+/*
+Hooks.on('renderChatLog', (app, html, data) =>
+  STAItem.chatListeners(html)
+);
+*/
 
-  Hooks.on('ready', function() {
-    const t = new STATracker();
-    renderTemplate('systems/sta/templates/apps/tracker.html').then((html) => {
-      t.render(true);
-    });
+// Fix old-style reputation
+Hooks.once('ready', function() {
+  for (const actor of game.actors.filter(actor => actor.type == 'character'))
+  {
+    if (!isNaN(Number(actor.system.reputation)))
+    {
+      const currentRep = actor.system.reputation;
+      actor.system.reputation = {
+        'value': currentRep,
+        'min': 0,
+        'max': game.settings.get('sta', 'maxNumberOfReputation')
+      };
+    }
+  }
+});
+
+Hooks.on('ready', function() {
+  const t = new STATracker();
+  renderTemplate('systems/sta/templates/apps/tracker.html').then((html) => {
+    t.render(true);
   });
+});
 
-  Hooks.once("diceSoNiceReady", (dice3d) => {
-    register_dsn_ufp_themes(dice3d);
-  });
+Hooks.once("diceSoNiceReady", (dice3d) => {
+  register_dsn_ufp_themes(dice3d);
 });

@@ -13,77 +13,107 @@
                 "control": {
                     "label": "sta.actor.character.attribute.control",
                     "value": 7,
+                    "min": 7,
+                    "max": 12,
                     "selected": true
                 },
                 "daring": {
                     "label": "sta.actor.character.attribute.daring",
                     "value": 7,
+                    "min": 7,
+                    "max": 12,
                     "selected": false
                 },
                 "fitness": {
                     "label": "sta.actor.character.attribute.fitness",
                     "value": 7,
+                    "min": 7,
+                    "max": 12,
                     "selected": false
                 },
                 "insight": {
                     "label": "sta.actor.character.attribute.insight",
                     "value": 7,
+                    "min": 7,
+                    "max": 12,
                     "selected": false
                 },
                 "presence": {
                     "label": "sta.actor.character.attribute.presence",
                     "value": 7,
+                    "min": 7,
+                    "max": 12,
                     "selected": false
                 },
                 "reason": {
                     "label": "sta.actor.character.attribute.reason",
                     "value": 7,
+                    "min": 7,
+                    "max": 12,
                     "selected": false
                 }
             },
             "determination": {
-                "value": 3,
+                "value": 1,
+                "min": 0,
                 "max": 3
             },
             "disciplines": {
                 "command": {
                     "label": "sta.actor.character.discipline.command",
                     "value": 0,
+                    "min": 0,
+                    "max": 5,
                     "selected": true
                 },
                 "conn": {
                     "label": "sta.actor.character.discipline.conn",
                     "value": 0,
+                    "min": 0,
+                    "max": 5,
                     "selected": false
                 },
                 "engineering": {
                     "label": "sta.actor.character.discipline.engineering",
                     "value": 0,
+                    "min": 0,
+                    "max": 5,
                     "selected": false
                 },
                 "medicine": {
                     "label": "sta.actor.character.discipline.medicine",
                     "value": 0,
+                    "min": 0,
+                    "max": 5,
                     "selected": false
                 },
                 "science": {
                     "label": "sta.actor.character.discipline.science",
                     "value": 0,
+                    "min": 0,
+                    "max": 5,
                     "selected": false
                 },
                 "security": {
                     "label": "sta.actor.character.discipline.security",
                     "value": 0,
+                    "min": 0,
+                    "max": 5,
                     "selected": false
                 }
             },
             "environment": "",
             "milestones": "",
             "rank": "",
-            "reputation": 0,
+            "reputation": {
+                "label": "sta.actor.character.reputation",
+                "value": 10,
+                "min": 0
+            },
             "species": "",
             "stress": {
-                "value": 0
+                "value": 0,
+                "min": 0
             },
             "upbringing": ""
         },

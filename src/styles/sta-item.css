@@ -1,0 +1,122 @@
+/* Item Sheet  */
+.sta.sheet.item
+{
+  /* Items - Weapon Specific */
+}
+.sta.sheet.item .label
+{
+  color: var(--color-blue-green-maximum);
+}
+.sta.sheet.item .header-fields
+{
+  font-size: 12pt;
+}
+.sta.sheet.item .header-fields .row
+{
+  display: flex;
+  flex-direction: row;
+}
+.sta.sheet.item .header-fields .row .img
+{
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  object-position: 50% 0;
+  margin-right: 10px;
+}
+.sta.sheet.item .header-fields .row .column-x1
+{
+  flex: 1;
+  margin-right: 10px;
+}
+.sta.sheet.item .header-fields .row .column-x3-img
+{
+  flex: 3 60px;
+  margin-right: 10px;
+}
+.sta.sheet.item .header-fields .row .column-x3
+{
+  flex: 3;
+}
+.sta.sheet.item .header-fields .row .column-x2
+{
+  flex: 2;
+  margin-right: 10px;
+}
+.sta.sheet.item .header-fields .row .one-column-with-roll
+{
+  width: calc(100% - 60px);
+}
+.sta.sheet.item input[type="text"],
+.sta.sheet.item input[type="number"],
+.sta.sheet.item select,
+.sta.sheet.item .text,
+.sta.sheet.item .entry,
+.sta.sheet.item .editor
+{
+  color: var(--color-violet-pale);
+}
+.sta.sheet.item option
+{
+  background-color: var(--color-black-smoky);
+}
+.sta.sheet.item input[type="number"]
+{
+  text-align: center;
+  width: 50px;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+.sta.sheet.item .editor-edit
+{
+  display: block;
+  color: var(--color-black);
+}
+.sta.sheet.item .editor-content
+{
+  padding-right: 25px;
+}
+.sta.sheet.item .tox.tox-tinymce .tox-edit-area__iframe
+{
+  background-color: var(--color-white);
+}
+.sta.sheet.item .description,
+.sta.sheet.item .note
+{
+  height: calc(100% - 100px);
+  padding-top: 10px;
+}
+.sta.sheet.item .description .editor,
+.sta.sheet.item .note .editor
+{
+  height: 90%;
+}
+.sta.sheet.item.characterweapon .header-fields .row, .sta.sheet.item.starshipweapon .header-fields .row
+{
+  font-size: 14px;
+}
+.sta.sheet.item.characterweapon .header-fields .row .column-x4, .sta.sheet.item.starshipweapon .header-fields .row .column-x4
+{
+  width: 25%;
+  display: flex;
+  text-align: left;
+}
+.sta.sheet.item.characterweapon .header-fields .row .column-x4 .label, .sta.sheet.item.starshipweapon .header-fields .row .column-x4 .label
+{
+  line-height: 26px;
+}
+.sta.sheet.item.characterweapon .header-fields .row .label-top, .sta.sheet.item.starshipweapon .header-fields .row .label-top
+{
+  width: 25%;
+  flex-direction: column;
+  text-align: center;
+}
+.sta.sheet.item.characterweapon .header-fields .row .label-top input, .sta.sheet.item.starshipweapon .header-fields .row .label-top input
+{
+  margin-left: auto;
+  margin-right: auto;
+}
+.sta.sheet.item.characterweapon .description, .sta.sheet.item.starshipweapon .description
+{
+  height: calc(100% - 128px);
+}

@@ -1,0 +1,50 @@
+ <div class="sta roll attribute">
+    <div class="dice-roll">
+        <div class="dice-result">
+            <div class="dice-formula">
+                <table class="aim">
+                    <tr>
+                        <td>{{#if useDetermination}}[{{add dicePool.length -1}}+1]{{else}}{{dicePool.length}}{{/if}}d20 </td>
+                        <td>{{localize 'sta.roll.successthreshold'}}  {{target}}</td>
+                        <td>{{localize 'sta.roll.criticalthreshold'}} {{#if criticalThreshold}}{{criticalThreshold}}{{else}}1{{/if}}</td>
+                        <td>{{localize 'sta.roll.complicationrange'}} {{complicationThreshold}}+</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="dice-tooltip">
+                <section class="tooltip-part">
+                    <div class="dice">
+                        <ol class="dice-rolls">
+                            {{#each dicePool}}
+                            <li class="roll die d20{{#if (gt this.count 1)}} max{{/if}}{{#if this.failure}} min{{/if}}{{#if this.determinationDie}} determination{{/if}}">{{this.result}}</li>
+                            {{/each}}
+                        </ol>
+                    </div>
+                </section>
+            </div>
+            {{#if numComplications}}
+            <h4 class="dice-total failure">
+                {{#if (gt numComplications 1)}}
+                {{replace (localize 'sta.roll.complicationPlural') '|#|' numComplications}}
+                {{else}}
+                {{localize 'sta.roll.complication'}}
+                {{/if}}
+            </h4>
+            {{/if}}
+            <h4 class="dice-total">
+                {{#if (eq successes 1)}}
+                {{replace (localize 'sta.roll.success') '|#|' successes}}
+                {{else}}
+                {{replace (localize 'sta.roll.successPlural') '|#|' successes}}
+                {{/if}}
+            </h4>
+        </div>
+    </div>
+    <div class="reroll-result attribute">
+        <span>{{localize 'sta.roll.rerollresults'}}</span>
+        <input id="actor" type="hidden" value="{{actor.id}}" />
+        <input id="selectedBase" type="hidden" value="{{selectedBase}}" />
+        <input id="selectedSkill" type="hidden" value="{{selectedSkill}}" />
+        <input id="speakerId" type="hidden" value="{{speakerId}}" />
+    </div>
+</div>

@@ -1,0 +1,116 @@
+/*  Momentum/Threat Tracker */
+.sta.tracker-container
+{
+  position: absolute;
+  bottom: 10px;
+  right: 354px;
+  width: 200px;
+  height: 205px;
+  -webkit-transition: width 0.5s linear;
+  -moz-transition: width 0.5s linear;
+  -ms-transition: width 0.5s linear;
+  -o-transition: width 0.5s linear;
+  transition: width 0.5s linear;
+}
+.sta.tracker-container .tracker-clickable
+{
+  position: absolute;
+  bottom: 195px;
+  cursor: pointer;
+  color: var(--color-red-amaranth);
+  width: 15px;
+}
+.sta.tracker-container .tracker-clickable i:hover
+{
+  color: var(--color-red-jasper);
+}
+.sta.tracker-container .tracker-clickable i.hide
+{
+  width: 0px;
+  display: none;
+}
+.sta.tracker-container.hide
+{
+  width: 15px;
+  -webkit-transition: width 0.5s linear;
+  -moz-transition: width 0.5s linear;
+  -ms-transition: width 0.5s linear;
+  -o-transition: width 0.5s linear;
+  transition: width 0.5s linear;
+}
+.sta.tracker-container .tracker
+{
+  position: absolute;
+  display: block;
+  margin-right: 0px;
+  height: 100px;
+  width: 220px;
+  background: none;
+  border-radius: 30px;
+  padding: 0px;
+  clip-path: inset(-20px 0px -20px -20px);
+}
+.sta.tracker-container .tracker.threat
+{
+  bottom: 0px;
+  background-color: var(--color-red-ferrari);
+}
+.sta.tracker-container .tracker.momentum
+{
+  bottom: 105px;
+  background-color: var(--color-blue-ultramarine);
+}
+.sta.tracker-container .tracker .header
+{
+  text-align: center;
+  font-size: 1.75em;
+  text-transform: uppercase;
+  color: var(--color-blue-green-maximum);
+  background-color: var(--color-black-smoky);
+  border-bottom-left-radius: 30px;
+  width: 185px;
+  height: 35px;
+  margin-left: 15px;
+  margin-bottom: 15px;
+}
+.sta.tracker-container .tracker .button-group
+{
+  display: flex;
+  font-size: 1.5em;
+  background-color: var(--color-black-smoky);
+  border-top-left-radius: 30px;
+  width: 185px;
+  height: 35px;
+  margin-left: 15px;
+  margin-top: 15px;
+}
+.sta.tracker-container .tracker .button-group .button
+{
+  color: var(--color-yellow-sunglow);
+}
+.sta.tracker-container .tracker .button-group .button i:hover
+{
+  cursor: pointer;
+  color: var(--color-white-peach);
+}
+.sta.tracker-container .tracker .button-group .button.decrease
+{
+  padding-left: 50px;
+  padding-right: 10px;
+}
+.sta.tracker-container .tracker .button-group .button.increase
+{
+  padding-left: 10px;
+  padding-right: 50px;
+}
+.sta.tracker-container .tracker .button-group input
+{
+  color: var(--color-violet-pale);
+  text-align: center;
+  border: none;
+  width: 100%;
+}
+#ui-right ~ .sta.tracker-container.collapsed
+{
+  right: 0px;
+}

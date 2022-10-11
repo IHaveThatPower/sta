@@ -11,8 +11,12 @@
             {{localize 'sta.actor.character.reputation'}}
           </div>
           <div class="track">
-            <input type="hidden" id="total-rep" name="system.reputation" value="{{system.reputation}}" data-dtype="Number" />
-            <div id="bar-rep-renderer" class=" bar"></div>
+            <input type="hidden" id="total-rep" name="system.reputation.value" value="{{system.reputation.value}}" data-dtype="Number" />
+            <div id="bar-rep-renderer" class="bar">
+              {{#repeat system.reputation.max false}}
+                <div class="box rep{{#if (lte this ../system.reputation.value)}} selected{{/if}}" id="rep-{{this}}" data-value="{{this}}"{{#if (lte this ../system.reputation.value)}} data-selected="true"{{/if}}>{{this}}</div>
+              {{/repeat}}
+            </div>
           </div>
         </div>
         <div class="row">
@@ -80,18 +84,13 @@
             <div class="title">
               {{localize 'sta.actor.character.attribute.title'}}
             </div>
-            <div class="stat header row">
-              <div class="selector-space"></div>
-              <div class="text secondary-title">{{localize 'sta.actor.character.attribute.name'}}</div>
-              <div class="field secondary-title">{{localize 'sta.actor.attdis.mod'}}</div>
-            </div>
             {{#each system.attributes as |attribute key|}}
-            <div class="stat row">
-              <input class="selector attribute" id="{{key}}.selector" type="checkbox" name="system.attributes.{{key}}.selected" data-dtype="Boolean" {{checked attribute.selected}}>
-              <div class="text list-entry"> {{localize attribute.label}} </div>
-              <input class="field numeric-entry" id="{{key}}" name="system.attributes.{{key}}.value" type="text" value="{{attribute.value}}" />
+            <div class="stat row{{#if attribute.selected}} selected{{/if}}">
+              <div class="text list-entry">{{localize attribute.label}}</div>
+              <input class="field numeric-entry" id="{{key}}" name="system.attributes.{{key}}.value" type="text" value="{{attribute.value}}" data-stat-type="attribute" />
             </div>
             {{/each}}
+            <input class="attribute" id="use-attribute" type="hidden" value="{{#each system.attributes}}{{#if this.selected}}{{@key}}{{/if}}{{/each}}" name="use-attribute" />
             <div class="check-button btn2 challenge">{{localize 'sta.actor.challenge.roll'}}</div>
           </div>
         </div>
@@ -102,8 +101,11 @@
             </div>
             <div class="track">
               <input type="hidden" id="total-stress" name="system.stress.value" value="{{system.stress.value}}" data-dtype="Number" />
-              <input type="hidden" id="max-stress" name="system.stress.max" value="{{system.stress.max}}" data-dtype="Number" />
-              <div id="bar-stress-renderer" class=" bar"></div>
+              <div id="bar-stress-renderer" class="bar">
+                {{#repeat system.stress.max false}}
+                <div class="box stress{{#if (lte this ../system.stress.value)}} selected{{/if}}" id="stress-{{this}}" data-value="{{this}}"{{#if (lte this ../system.stress.value)}} data-selected="true"{{/if}}>{{this}}</div>
+                {{/repeat}}
+              </div>
             </div>
           </div>
           <div class="section img">
@@ -116,9 +118,12 @@
             <div class="track">
               <input type="hidden" id="total-determination" name="system.determination.value" value="{{system.determination.value}}" data-dtype="Number" />
               <div class="bar">
-                <div id="bar-determination-renderer" class="bar"></div>
+                <div id="bar-determination-renderer" class="bar">
+                {{#repeat system.determination.max false}}
+                  <div class="box determination{{#if (lte this ../system.determination.value)}} selected{{/if}}" id="determination-{{this}}" data-value="{{this}}"{{#if (lte this ../system.determination.value)}} data-selected="true"{{/if}}>{{this}}</div>
+                {{/repeat}}
+                </div>
               </div>
-              
             </div>
           </div>
         </div>
@@ -127,19 +132,13 @@
             <div class="title">
               {{localize 'sta.actor.character.discipline.title'}}
             </div>
-            <div class="stat header row">
-              <div class="field secondary-title">{{localize 'sta.actor.attdis.mod'}}</div>
-              <div class="text secondary-title">{{localize 'sta.actor.character.discipline.name'}}</div>
-              <div class="selector-space"></div>
-            </div>
             {{#each system.disciplines as |discipline key|}}
-            <div class="stat row">
-              <input class="field numeric-entry" id="{{key}}" name="system.disciplines.{{key}}.value" type="text" value="{{discipline.value}}" placeholder="Name" />
+            <div class="stat row{{#if discipline.selected}} selected{{/if}}">
+              <input class="field numeric-entry" id="{{key}}" name="system.disciplines.{{key}}.value" type="text" value="{{discipline.value}}" placeholder="Name" data-stat-type="discipline" />
               <div class="text list-entry"> {{localize discipline.label}} </div>
-              <input class="selector discipline" id="{{key}}.selector" type="checkbox" name="system.disciplines.{{key}}.selected" data-dtype="Boolean" {{checked discipline.selected}}>
             </div>
             {{/each}}
-            <div class="check-button btn attribute">{{localize 'sta.actor.attdis.task'}}</div>
+            <input class="discipline" id="use-discipline" type="hidden" value="{{#each system.disciplines}}{{#if this.selected}}{{@key}}{{/if}}{{/each}}" name="use-discipline" /><div class="check-button btn attribute">{{localize 'sta.actor.attdis.task'}}</div>
           </div>
         </div>
       </div>
@@ -159,18 +158,18 @@
               <div class="one-column-with-roll secondary-title">{{localize 'sta.item.genericitem.name'}}</div>
               <a class="control create" title="Create item" data-type="talent"><i class="fas fa-plus"></i></a>
             </div>
-            {{#each items as |item id|}}
+            {{#each items as |item|}}
             {{#if (eq item.type "talent")}}
-            <li class="row entry" data-item-id="{{item.id}}" data-item-type="{{item.type}}" data-item-value="{{item.name}}">
+            <li class="row entry" data-item-id="{{item._id}}" data-item-type="{{item.type}}" data-item-value="{{item.name}}">
               <div class="image"><img class="chat" src="{{item.img}}" title="{{item.name}}"/></div>
-              <div class="one-column-no-roll list-entry talent-tooltip-clickable" id="talent-tooltip-clickable-{{item.id}}" data-talent-name="{{item.name}}">{{item.name}}</div>
+              <div class="one-column-no-roll list-entry talent-tooltip-clickable" id="talent-tooltip-clickable-{{item._id}}" data-talent-name="{{item.name}}">{{item.name}}</div>
               <div class="control">
                 <a class="edit" title="Edit Item"><i class="fas fa-edit"></i></a>
                 <a class="delete" title="Delete Item"><i class="fas fa-trash"></i></a>
               </div>
             </li>
-            <li class="row entry talent-tooltip-container hide" id="talent-tooltip-container-{{item.id}}">
-              <div class="list-entry talent-tooltip-text" id="talent-tooltip-text-{{item.id}}">{{item.system.description}}</div>
+            <li class="row entry talent-tooltip-container hide" id="talent-tooltip-container-{{item._id}}" data-item-id="{{item._id}}">
+              <div class="list-entry talent-tooltip-text" id="talent-tooltip-text-{{item._id}}" data-item-id="{{item._id}}">{{{item.sheetTooltip}}}</div>
             </li>
             {{/if}}
             {{/each}}
@@ -187,9 +186,9 @@
               <div class="one-column-with-roll">{{localize 'sta.item.genericitem.name'}}</div>
               <a class="control create" title="Create item" data-type="value"><i class="fas fa-plus"></i></a>
             </div>
-            {{#each items as |item id|}}
+            {{#each items as |item|}}
             {{#if (eq item.type "value")}}
-            <li class="row entry" data-item-id="{{item.id}}" data-item-type="{{item.type}}" data-item-value="{{item.name}}">
+            <li class="row entry" data-item-id="{{item._id}}" data-item-type="{{item.type}}" data-item-value="{{item.name}}">
               <div class="image"><img class="chat" src="{{item.img}}" title="{{item.name}}"/></div>
               <a class="value-used control toggle"><i class="fas fa-toggle-{{#if (eq item.system.used true)}}on{{else}}off{{/if}}"></i></a>
               <h4 class="one-column-with-roll list-entry {{#if (eq item.system.used true)}}strike-through{{/if}}">{{name}}</h4>
@@ -285,7 +284,7 @@
             <li class="row entry" id="character-weapon-{{@index}}" data-item-id="{{item.id}}" data-item-type="{{item.type}}" data-item-value="{{item.name}}" data-item-damage="{{item.system.damage}}">
               <div class="image"><img class="rollable challenge" src="{{item.img}}" title="{{item.name}}" data-item-name="{{item.name}}"/></div>
               <h4 class="two-column-with-roll-primary list-entry">{{item.name}}</h4>
-              <h4 class="two-column-with-roll-secondary list-entry damage">{{item.system.damage}}</h4>
+              <h4 class="two-column-with-roll-secondary list-entry damage">{{add item.system.damage ../system.disciplines.security.value}}</h4>
               <div class="control">
                 <a class="edit" title="Edit Item"><i class="fas fa-edit"></i></a>
                 <a class="delete" title="Delete Item"><i class="fas fa-trash"></i></a>
