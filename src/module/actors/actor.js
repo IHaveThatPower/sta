@@ -1,24 +1,28 @@
 import {
   STARollDialog
 } from '../apps/roll-dialog.js';
-import {
-  STATaskRoll, STAChallengeRoll
-} from '../roll.js';
 
 export class STAActor extends Actor {
   /** Define some max/min statistic values */
-  static ATTRIBUTE_MIN = 7;
-  static ATTRIBUTE_MAX = 12;
-  static DISCIPLINE_MIN = 0;
-  static DISCIPLINE_MAX = 5;
+  static BASE_MIN = 7;
+  static BASE_MAX = 12;
+  static SKILL_MIN = 0;
+  static SKILL_MAX = 5;
+
+  /** Character-specific */
   static STRESS_MIN = 0;
   static DETERMINATION_MIN = 0;
   static DETERMINATION_MAX = 3;
   static REPUTATION_MIN = 0;
 
+  /** Starship/Smallcraft-specific */
+  static SHIELDS_MIN = 0;
+  static POWER_MIN = 0;
+  static CREW_MIN = 0;
+
   /**
    * Fix up the default image, if needed
-   * 
+   *
    * @param ...args
    * @return void
    */
@@ -29,25 +33,45 @@ export class STAActor extends Actor {
   }
 
   /**
-   * Set stress and reputation maximums of characters
-   * 
+   * Set statistical min/max values for the actor
+   *
    * @param ...args
    * @return void
    */
   prepareDerivedData(...args) {
     const ret = super.prepareDerivedData(...args);
 
-    // TODO: Move to a CharacterActor class
-    if (this.type == "character")
-    {
-      if (!this.system)
-        throw new Error("Invalid object supplied");
+    if (!this.system)
+      throw new Error("Invalid object supplied");
 
+    switch (this.type)
+    {
+      case 'character':
+        this._prepareDerivedCharacterData();
+        break;
+      case 'starship':
+      case 'smallcraft':
+        this._prepareDerivedStarshipData();
+        break;
+      case 'extendedtask': // TODO: Extended Task
+      default:
+        break;
+    }
+    return ret;
+  }
+
+  /**
+   * Set statistical min/max values specific to characters
+   *
+   * @return  void
+   */
+   _prepareDerivedCharacterData()
+   {
       // Ensure attribute values aren't over the max/min.
       let attributeSelected = false;
       $.each(this.system.attributes, (key, attribute) => {
         attribute = this.matchWithTemplate('attributes', key, attribute);
-        attribute.value = this.setValueWithinRange(attribute.value, STAActor.ATTRIBUTE_MIN, STAActor.ATTRIBUTE_MAX);
+        attribute.value = this.setValueWithinRange(attribute.value, STAActor.BASE_MIN, STAActor.BASE_MAX);
         if (attribute.selected && attributeSelected)
           attribute.selected = false;
         else if (attribute.selected)
@@ -60,7 +84,7 @@ export class STAActor extends Actor {
       let disciplineSelected = false;
       $.each(this.system.disciplines, (key, discipline) => {
         discipline = this.matchWithTemplate('disciplines', key, discipline);
-        discipline.value = this.setValueWithinRange(discipline.value, STAActor.DISCIPLINE_MIN, STAActor.DISCIPLINE_MAX)
+        discipline.value = this.setValueWithinRange(discipline.value, STAActor.SKILL_MIN, STAActor.SKILL_MAX)
         if (discipline.selected && disciplineSelected)
           discipline.selected = false;
         else if (discipline.selected)
@@ -86,17 +110,76 @@ export class STAActor extends Actor {
       this.system.reputation = this.matchWithTemplate('reputation', this.system.reputation);
       this.system.reputation.max = game.settings.get('sta', 'maxNumberOfReputation');
       this.system.reputation.value = this.setValueWithinRange(this.system.reputation.value, STAActor.REPUTATION_MIN, this.system.reputation.max);
-    }
-    return ret;
-  }
-  
+   }
+
+  /**
+   * Set statistical min/max values relevant to starships/smallcraft
+   *
+   * @return  void
+   */
+   _prepareDerivedStarshipData()
+   {
+      // Ensure attribute values aren't over the max/min.
+      let systemSelected = false;
+      $.each(this.system.systems, (key, sysData) => {
+        sysData = this.matchWithTemplate('systems', key, sysData);
+        sysData.value = this.setValueWithinRange(sysData.value, STAActor.BASE_MIN, STAActor.BASE_MAX);
+        if (sysData.selected && systemSelected)
+          sysData.selected = false;
+        else if (sysData.selected)
+          systemSelected = true;
+      });
+      if (!systemSelected)
+        this.system.systems.engines.selected = true;
+
+      // Ensure department values aren't over the max/min.
+      let departmentSelected = false;
+      $.each(this.system.departments, (key, department) => {
+        department = this.matchWithTemplate('departments', key, department);
+        department.value = this.setValueWithinRange(department.value, STAActor.SKILL_MIN, STAActor.SKILL_MAX)
+        if (department.selected && departmentSelected)
+          department.selected = false;
+        else if (department.selected)
+          departmentSelected = true;
+      });
+      if (!departmentSelected)
+        this.system.departments.command.selected = true;
+
+      // Check shield max/min
+      this.system.shields = this.matchWithTemplate('shields', this.system.shields);
+      this.system.shields.max = Number(this.system.systems.structure.value) + Number(this.system.departments.security.value);
+      if (this.items.find(item => item.type == "talent" && item.name  == "Advanced Shields"))
+        this.system.shields.max += 5; // TODO: Make non-magic; probably from the item def?
+      if (this.type == 'smallcraft')
+        this.system.shields.max = Math.ceil(this.system.shields.max / 2);
+      this.system.shields.value = this.setValueWithinRange(this.system.shields.value, STAActor.SHIELDS_MIN, this.system.shields.max);
+
+      // Check power max/min
+      this.system.power = this.matchWithTemplate('power', this.system.power);
+      this.system.power.max = Number(this.system.systems.engines.value);
+      if (this.items.find(item => item.type == "talent" && item.name  == "Secondary Reactors"))
+        this.system.power.max += 5; // TODO: Make non-magic; probably from the item def?
+      if (this.type == 'smallcraft')
+        this.system.power.max = Math.ceil(this.system.power.max / 2);
+      this.system.power.value = this.setValueWithinRange(this.system.power.value, STAActor.POWER_MIN, this.system.power.max);
+
+      // Check crew max/min
+      if (this.type == 'starship') // Not applicable to smallcraft
+      {
+        this.system.crew = this.matchWithTemplate('crew', this.system.crew);
+        this.system.crew.max = Number(this.system.scale);
+        // TODO: Handle crew-related talents?
+        this.system.crew.value = this.setValueWithinRange(this.system.crew.value, STAActor.CREW_MIN, this.system.crew.max);
+      }
+   }
+
   /**
    * Ensure an indicated statistic matches the template model for it
-   * 
+   *
    * Accepts two or three arguments. First argument is always the main
-   * key for the Actor. Second argument can be a sub-key. Final 
+   * key for the Actor. Second argument can be a sub-key. Final
    * argument is always the current data on the actor
-   * 
+   *
    * @return  object
    */
   matchWithTemplate()
@@ -105,18 +188,19 @@ export class STAActor extends Actor {
     let statTemplate;
     let statData;
     let statName; // Diagnostic only
+    const actorTemplate = this.type;
     switch (arguments.length)
     {
       case 3:
       {
-        statTemplate = game.template.Actor.character[arguments[0]][arguments[1]];
+        statTemplate = game.template.Actor[actorTemplate][arguments[0]][arguments[1]];
         statName = arguments[0]+'.'+arguments[1];
         statData = arguments[2];
         break;
       }
       case 2:
       {
-        statTemplate = game.template.Actor.character[arguments[0]];
+        statTemplate = game.template.Actor[actorTemplate][arguments[0]];
         statName = arguments[0];
         statData = arguments[1];
         break;
@@ -149,7 +233,7 @@ export class STAActor extends Actor {
    * Given a statistic value, its minimum value, and its maximum value,
    * return the nearest value within the min/max bounds, including the
    * original value.
-   * 
+   *
    * @param int value
    * @param int [optional] min
    * @param int [optional] max
@@ -160,41 +244,54 @@ export class STAActor extends Actor {
     value = (!isNaN(max) ? Math.min(value, max) : value);
     return (!isNaN(min) ? Math.max(value, min) : value);
   }
-  
+
   /**
    * If an update includes a change in the "selected" attribute or
    * discipline, ensure the data payload includes properties for all
    * attributes/disciplines, set to false except for the chosen one.
-   * 
+   *
    * @param {object} data
    * @param {object} context
    * @return  Promise
    */
   async update(data, context)
   {
-    if (data['use-attribute'])
+    let baseKey = '';
+    let skillKey = '';
+    switch (this.type)
     {
-      for (const attribute in this.system.attributes)
+      case 'character':
+        baseKey = 'attributes';
+        skillKey = 'disciplines';
+        break;
+      default: // TODO: Extended Tasks?
+        baseKey = 'systems';
+        skillKey = 'departments';
+        break;
+    }
+    if (data['use-base'])
+    {
+      for (const base in this.system[baseKey])
       {
-        data[`system.attributes.${attribute}.selected`] = (attribute == data['use-attribute']);
+        data[`system.${baseKey}.${base}.selected`] = (base == data['use-base']);
       }
     }
-    if (data['use-discipline'])
+    if (data['use-skill'])
     {
-      for (const discipline in this.system.disciplines)
+      for (const skill in this.system[skillKey])
       {
-        data[`system.disciplines.${discipline}.selected`] = (discipline == data['use-discipline']);
+        data[`system.${skillKey}.${skill}.selected`] = (skill == data['use-skill']);
       }
     }
     return super.update(data, context);
   }
-  
+
   /**
    * Perform a task roll
-   * 
+   *
    * @param string base attribute/system
    * @param string skill discipline/department
-   * @return TODO: Determine
+   * @return Promise
    */
   async performTaskRoll(base, skill)
   {
@@ -208,137 +305,10 @@ export class STAActor extends Actor {
     if (configured === null)
       return;
     await r.evaluate({async: true});
-/*
- *     const rollData = foundry.utils.mergeObject({
-      parts: parts,
-      data: data,
-      title: `${flavor}: ${this.name}`,
-      flavor,
-      chooseModifier: true,
-      halflingLucky: this.getFlag("dnd5e", "halflingLucky"),
-      reliableTalent,
-      messageData: {
-        speaker: options.speaker || ChatMessage.getSpeaker({actor: this}),
-        "flags.dnd5e.roll": {type: "skill", skillId }
-      }
-    }, options);
-    */
+
     const messageData = mergeObject({
       speaker: ChatMessage.getSpeaker({actor: this}),
     }, r);
     return r.toMessage(messageData);
-  }
-}
-
-/** Shared functions for actors **/
-export class STASharedActorFunctions {
-  // This function renders all the tracks. This will be used every time the character sheet is loaded. It is a vital element as such it runs before most other code!
-  staRenderTracks(html, stressTrackMax, determinationPointsMax, repPointsMax, shieldsTrackMax, powerTrackMax, crewTrackMax) {
-    let i;
-
-    // if this is a starship, it will have shields instead of stress, but will be handled very similarly
-    if (shieldsTrackMax) {
-      for (i = 0; i < shieldsTrackMax; i++) {
-        html.find('[id^="shields"]')[i].classList.add('shields');
-        if (i + 1 <= html.find('#total-shields').val()) {
-          html.find('[id^="shields"]')[i].setAttribute('data-selected', 'true');
-          html.find('[id^="shields"]')[i].classList.add('selected');
-        } else {
-          html.find('[id^="shields"]')[i].removeAttribute('data-selected');
-          html.find('[id^="shields"]')[i].classList.remove('selected');
-        }
-      }
-    }
-    // if this is a starship, it will have power instead of determination, but will be handled very similarly
-    if (powerTrackMax) {
-      for (i = 0; i < powerTrackMax; i++) {
-        html.find('[id^="power"]')[i].classList.add('power');
-        if (i + 1 <= html.find('#total-power').val()) {
-          html.find('[id^="power"]')[i].setAttribute('data-selected', 'true');
-          html.find('[id^="power"]')[i].classList.add('selected');
-        } else {
-          html.find('[id^="power"]')[i].removeAttribute('data-selected');
-          html.find('[id^="power"]')[i].classList.remove('selected');
-        }
-      }
-    }
-    // if this is a starship, it will also have crew support level instead of determination, but will be handled very similarly
-    if (crewTrackMax) {
-      for (i = 0; i < crewTrackMax; i++) {
-        html.find('[id^="crew"]')[i].classList.add('crew');
-        if (i + 1 <= html.find('#total-crew').val()) {
-          html.find('[id^="crew"]')[i].setAttribute('data-selected', 'true');
-          html.find('[id^="crew"]')[i].classList.add('selected');
-        } else {
-          html.find('[id^="crew"]')[i].removeAttribute('data-selected');
-          html.find('[id^="crew"]')[i].classList.remove('selected');
-        }
-      }
-    }
-  }
-
-  // This handles performing an attribute test using the "Perform Check" button.
-  async rollAttributeTest(event, selectedAttribute, selectedAttributeValue,
-    selectedDiscipline, selectedDisciplineValue, defaultValue, speaker) {
-    event.preventDefault();
-    if (!defaultValue) defaultValue = 2;
-    // This creates a dialog to gather details regarding the roll and waits for a response
-    const rolldialog = await STARollDialog.create(true, defaultValue);
-    if (rolldialog) {
-      const dicePool = rolldialog.get('dicePoolSlider');
-      const usingFocus = rolldialog.get('usingFocus') == null ? false : true;
-      const usingDetermination = rolldialog.get('usingDetermination') == null ? false : true;
-      const complicationRange = parseInt(rolldialog.get('complicationRange'));
-      // Once the response has been collected it then sends it to be rolled.
-      const staRoll = new STARoll();
-      staRoll.performAttributeTest(dicePool, usingFocus, usingDetermination,
-        selectedAttribute, selectedAttributeValue, selectedDiscipline,
-        selectedDisciplineValue, complicationRange, speaker);
-    }
-  }
-
-  // This handles performing an challenge roll using the "Perform Challenge Roll" button.
-  async rollChallengeRoll(event, weaponName, defaultValue, speaker) {
-    event.preventDefault();
-    // This creates a dialog to gather details regarding the roll and waits for a response
-    const rolldialog = await STARollDialog.create(false, defaultValue);
-    if (rolldialog) {
-      const dicePool = rolldialog.get('dicePoolValue');
-      // Once the response has been collected it then sends it to be rolled.
-      const staRoll = new STARoll();
-      staRoll.performChallengeRoll(dicePool, weaponName, speaker);
-    }
-  }
-
-  // This handles performing an "item" roll by clicking the item's image.
-  async rollGenericItem(event, type, id, speaker) {
-    event.preventDefault();
-    const item = speaker.items.get(id);
-    const staRoll = new STARoll();
-    // It will send it to a different method depending what item type was sent to it.
-    switch (type) {
-    case 'item':
-      staRoll.performItemRoll(item, speaker);
-      break;
-    case 'focus':
-      staRoll.performFocusRoll(item, speaker);
-      break;
-    case 'value':
-      staRoll.performValueRoll(item, speaker);
-      break;
-    case 'weapon':
-    case 'starshipweapon':
-      staRoll.performWeaponRoll(item, speaker);
-      break;
-    case 'armor':
-      staRoll.performArmorRoll(item, speaker);
-      break;
-    case 'talent':
-      staRoll.performTalentRoll(item, speaker);
-      break;
-    case 'injury':
-      staRoll.performInjuryRoll(item, speaker);
-      break;
-    }
   }
 }

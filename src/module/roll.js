@@ -425,7 +425,6 @@ export class STATaskRoll extends STARoll
     // If determination was involved, insert another pre-computed result
     if (this.options.useDetermination)
     {
-      console.log("Appending determination die", this.options.useDetermination);
       // TODO: Automatically debit Determination from character? (not here, though)
       this.terms[0].number += 1;
       this.terms[0].results.push({result: 1, active: true, count: 2, success: true, determination: true});

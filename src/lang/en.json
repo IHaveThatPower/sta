@@ -148,6 +148,20 @@
   "sta.item.house.legacy.scientists": "Scientists",
   "sta.item.house.legacy.physicians": "Physicians",
 
+  "sta.item.placeholder.item": "New Item",
+  "sta.item.placeholder.focus": "New Focus",
+  "sta.item.placeholder.value": "New Value",
+  "sta.item.placeholder.characterweapon": "New Weapon",
+  "sta.item.placeholder.starshipweapon": "New Weapon",
+  "sta.item.placeholder.armor": "New Armor",
+  "sta.item.placeholder.talent": "New Talent",
+  "sta.item.placeholder.milestone": "New Milestone",
+  "sta.item.placeholder.injury": "New Injury",
+  "sta.item.placeholder.smallcraftcontainer": "New Small Craft Container",
+
+  "sta.item.armor.add_unequipped": "The current actor already had armor equipped. Adding unequipped.",
+  "sta.item.delete.confirm": 'Are you sure you want to delete "|#|"?',
+
   "sta.apps.dicepoolwindow": "Dice Pool",
   "sta.apps.focus": "Using focus?",
   "sta.apps.determination": "Using determination/value?",
