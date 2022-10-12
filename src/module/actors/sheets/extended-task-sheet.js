@@ -1,8 +1,10 @@
 import {
-  STASharedActorFunctions
-} from '../actor.js';
+  STAActorSheet
+} from './actor-sheet.js';
 
-export class STAExtendedTaskSheet extends ActorSheet {
+export class STAExtendedTaskSheet extends STAActorSheet {
+  static SHEET_TEMPLATE = 'systems/sta/templates/actors/extended-task-sheet.html';
+
   /** @override */
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {
@@ -12,49 +14,46 @@ export class STAExtendedTaskSheet extends ActorSheet {
     });
   }
 
-  /* -------------------------------------------- */
-  // If the player is not a GM and has limited permissions - send them to the limited sheet, otherwise, continue as usual.
   /** @override */
   get template() {
-    if ( !game.user.isGM && this.actor.limited) {
+    if (!game.user.isGM && this.actor.limited)
+    {
       ui.notifications.warn('You do not have permission to view this sheet!');
       return false;
     }
-    return `systems/sta/templates/actors/extended-task-sheet.html`;
+    return super.template;
   }
 
-  /* -------------------------------------------- */
-
   /** @override */
+  /*
   getData() {
     const sheetData = this.object;
     sheetData.dtypes = ['String', 'Number', 'Boolean'];
-    
+
     if (sheetData.system.magnitude < 0) sheetData.system.magnitude = 0;
     if (sheetData.system.work < 0) sheetData.system.work = 0;
     if (sheetData.system.difficulty < 0) sheetData.system.difficulty = 0;
     if (sheetData.system.resistance < 0) sheetData.system.resistance = 0;
-    
+
     return sheetData.system;
   }
+  */
 
   /* -------------------------------------------- */
 
   /** @override */
   activateListeners(html) {
     super.activateListeners(html);
-    
-    // Opens the class STASharedActorFunctions for access at various stages.
-    const staActor = new STASharedActorFunctions();
 
     // If the player has limited access to the actor, there is nothing to see here. Return.
-    if ( !game.user.isGM && this.actor.limited) return;
+    if (!game.user.isGM && this.actor.limited) return;
 
+    // TODO: Refactor
     function renderExtendedWorkTracks() {
       const work = parseInt(html.find('#work')[0].value);
 
       const trackNumber = Math.ceil(work/5);
-      
+
       const fullDiv = document.createElement('DIV');
       fullDiv.style = 'width: 100%;';
       fullDiv.className = 'bar extendedtask';

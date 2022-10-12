@@ -87,10 +87,10 @@
             {{#each system.attributes as |attribute key|}}
             <div class="stat row{{#if attribute.selected}} selected{{/if}}">
               <div class="text list-entry">{{localize attribute.label}}</div>
-              <input class="field numeric-entry" id="{{key}}" name="system.attributes.{{key}}.value" type="text" value="{{attribute.value}}" data-stat-type="attribute" />
+              <input class="field numeric-entry" id="{{key}}" name="system.attributes.{{key}}.value" type="number" value="{{attribute.value}}" data-stat-type="attribute" />
             </div>
             {{/each}}
-            <input class="attribute" id="use-attribute" type="hidden" value="{{#each system.attributes}}{{#if this.selected}}{{@key}}{{/if}}{{/each}}" name="use-attribute" />
+            <input class="attribute" id="use-base" type="hidden" value="{{#each system.attributes}}{{#if this.selected}}{{@key}}{{/if}}{{/each}}" name="use-base" />
             <div class="check-button btn2 challenge">{{localize 'sta.actor.challenge.roll'}}</div>
           </div>
         </div>
@@ -138,7 +138,7 @@
               <div class="text list-entry"> {{localize discipline.label}} </div>
             </div>
             {{/each}}
-            <input class="discipline" id="use-discipline" type="hidden" value="{{#each system.disciplines}}{{#if this.selected}}{{@key}}{{/if}}{{/each}}" name="use-discipline" /><div class="check-button btn attribute">{{localize 'sta.actor.attdis.task'}}</div>
+            <input class="discipline" id="use-skill" type="hidden" value="{{#each system.disciplines}}{{#if this.selected}}{{@key}}{{/if}}{{/each}}" name="use-skill" /><div class="check-button btn attribute">{{localize 'sta.actor.attdis.task'}}</div>
           </div>
         </div>
       </div>

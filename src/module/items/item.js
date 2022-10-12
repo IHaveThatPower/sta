@@ -1,7 +1,3 @@
-import {
-  STASharedActorFunctions
-} from '../actors/actor.js';
-
 export class STAItem extends Item {
 	/*
   // Augment basic Item data model with additional dynamic data.
@@ -9,7 +5,7 @@ export class STAItem extends Item {
     const itemData = this;
     const actorData = this.actor ? this.actor : {};
     const data = itemData;
-    
+
     if (!this.img) this.img = game.sta.defaultImage;
 
     return super.prepareData();
@@ -33,7 +29,7 @@ export class STAItem extends Item {
     const staActor = new STASharedActorFunctions();
 
     const children = event.currentTarget.children;
-    const speaker = game.actors.find((target) => 
+    const speaker = game.actors.find((target) =>
       target.id === children.speakerId.value);
 
     staActor.rollAttributeTest(event, children.selectedAttribute.value,
@@ -46,7 +42,7 @@ export class STAItem extends Item {
     const staActor = new STASharedActorFunctions();
 
     const currentChildren = event.currentTarget.children;
-    const speaker = game.actors.find((target) => 
+    const speaker = game.actors.find((target) =>
       target.id === currentChildren.speakerId.value);
 
     staActor.rollChallengeRoll(event, null, null, speaker);
