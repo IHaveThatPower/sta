@@ -1,8 +1,11 @@
 <form id="dice-pool-form" class="sta-form">
-    <div class=" dice-pool flexcol">
-        <div class="flexrow">
-            <div style="flex: 1;"><label class="label">{{localize 'sta.apps.pool'}}</label></div>
-            <input type="number" name="dicePoolValue" min="1" value="{{defaultValue}}" class="numeric-entry" id="dicePoolValue">
+    <div class="dice-pool flexcol">
+        <div class="flexrow" id="dice-pool-description">
+            <h1 class="label">{{#if rollTitle}}{{rollTitle}}{{else}}{{localize 'sta.apps.defaultchallengetext'}}{{/if}}</h1>
+        </div>
+        <div class="flexrow challenge-row">
+            <input type="number" name="dicePoolValue" min="1" value="{{dicePool}}" class="numeric-entry" id="dicePoolValue">
+            <label class="label">{{localize 'sta.apps.pool'}}</label>
         </div>
     </div>    
 </form>

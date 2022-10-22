@@ -62,7 +62,7 @@
             {{#each system.systems as |system key|}}
             <div class="stat row{{#if system.selected}} selected{{/if}}">
               <div class="text list-entry"> {{localize system.label}} </div>
-              <input class="field numeric-entry" id="{{key}}" name="system.systems.{{key}}.value" type="number" value="{{system.value}}" data-stat-type="system" />
+              <input class="field numeric-entry" id="{{key}}" name="system.systems.{{key}}.value" type="number" value="{{system.value}}" data-stat-type="base" />
               <input class="field numeric-entry" id="{{key}}.breaches" name="system.systems.{{key}}.breaches" type="number" value="{{system.breaches}}" />
             </div>
             {{/each}}
@@ -116,7 +116,7 @@
             </div>
             {{#each system.departments as |department key|}}
             <div class="stat row{{#if department.selected}} selected{{/if}}">
-              <input class="field numeric-entry" id="{{key}}" name="system.departments.{{key}}.value" type="text" value="{{department.value}}" placeholder="Name" data-stat-type="department" />
+              <input class="field numeric-entry" id="{{key}}" name="system.departments.{{key}}.value" type="text" value="{{department.value}}" placeholder="Name" data-stat-type="skill" />
               <div class="text list-entry"> {{localize department.label}} </div>
             </div>
             {{/each}}

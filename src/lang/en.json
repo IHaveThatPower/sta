@@ -160,13 +160,14 @@
   "sta.item.placeholder.smallcraftcontainer": "New Small Craft Container",
 
   "sta.item.armor.add_unequipped": "The current actor already had armor equipped. Adding unequipped.",
-  "sta.item.delete.confirm": 'Are you sure you want to delete "|#|"?',
+  "sta.item.delete.confirm": "Are you sure you want to delete \"|#|\"?",
 
   "sta.apps.dicepoolwindow": "Dice Pool",
   "sta.apps.focus": "Using focus?",
   "sta.apps.determination": "Using determination/value?",
   "sta.apps.complicationrange": "Complication range (1 is default)?",
-  "sta.apps.pool": "Number of Dice in Pool",
+  "sta.apps.defaultchallengetext": "Challenge Roll",
+  "sta.apps.pool": "Dice in Pool",
   "sta.apps.rolldice": "Roll Dice",
 
   "sta.roll.success": "|#| Success",

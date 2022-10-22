@@ -311,4 +311,28 @@ export class STAActor extends Actor {
     }, r);
     return r.toMessage(messageData);
   }
+
+  /**
+   * Perform a challenge roll
+   *
+   * @param {object} itemData Optional payload of item data
+   * @return Promise
+   */
+  async performChallengeRoll(itemData = {})
+  {
+    let actorRef = this;
+    let r = new CONFIG.Dice.STAChallengeRoll(null, null, {
+      actor: actorRef,
+      itemData: itemData
+    });
+    const configured = await r.configureDialog();
+    if (configured === null)
+      return;
+    await r.evaluate({async: true});
+
+    const messageData = mergeObject({
+      speaker: ChatMessage.getSpeaker({actor: this}),
+    }, r);
+    return r.toMessage(messageData);
+  }
 }

@@ -1,0 +1,47 @@
+<div class="sta roll challenge">
+  {{#if isPrivate}}
+  {{else}}
+  <div class="dice-roll">
+    <div class="dice-result">
+      <div class="dice-formula">
+        <table class="aim"><tr>
+          <td>{{dicePool}}d6 </td>
+        </tr></table>
+      </div>
+      <div class="dice-tooltip">
+        <section class="tooltip-part">
+          <div class="dice">
+            <ol class="dice-rolls">
+            {{#each diceResults}}
+              {{#if this.success}}
+                {{#if this.effect}}
+              <li class="roll die d6"><img src="systems/sta/assets/icons/ChallengeDie_Effect_small.png" /></li>
+                {{else}}
+                  {{#if (gt this.count 1)}}
+              <li class="roll die d6"><img src="systems/sta/assets/icons/ChallengeDie_Success2_small.png" /></li>
+                  {{else}}
+              <li class="roll die d6"><img src="systems/sta/assets/icons/ChallengeDie_Success1_small.png" /></li>
+                  {{/if}}
+                {{/if}}
+              {{else}}
+              <li class="roll die d6"><img src="systems/sta/assets/icons/ChallengeDie_Success0_small.png" /></li>
+              {{/if}}
+            {{/each}}
+            </ol>
+          </div>
+        </section>
+      </div>
+      <h4 class="dice-total effect">{{#if (eq effects 1)}}{{localize 'sta.roll.effect'}}{{else}}{{replace (localize 'sta.roll.effectPlural') '|#|' effects}}{{/if}}</h4>  
+      <h4 class="dice-total">{{#if (eq successes 1)}}{{replace (localize 'sta.roll.success') '|#|' successes}}{{else}}{{replace (localize 'sta.roll.successPlural') '|#|' successes}}{{/if}}</h4>
+      </div>
+    </div>
+    <!--
+    <div class="reroll-result challenge">
+      <span>{{localize 'sta.roll.rerollresults'}}</span>
+      <input id="actor" type="hidden" value="{{actor._id}}" />
+      <input id="speakerId" type="hidden" value="{{speakerId}}" />
+    </div>
+    -->
+  </div>
+  {{/if}}
+</div>

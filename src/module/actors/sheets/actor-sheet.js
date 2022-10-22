@@ -159,7 +159,7 @@ export class STAActorSheet extends ActorSheet {
           {
             if (item.type == 'armor' && item.equipped)
             {
-              ui.notifications.info(game.i18n.format('sta.item.armor.add_unequipped');
+              ui.notifications.info(game.i18n.format('sta.item.armor.add_unequipped'));
               itemData.equipped = false;
               break;
             }
@@ -286,21 +286,13 @@ export class STAActorSheet extends ActorSheet {
         return this.actor.performTaskRoll(selectedBase, selectedSkill);
       });
 
-      // If the check-button is clicked it fires the method challenge roll method. See actor.js for further info.
       html.find('.check-button.challenge').click(async (ev) => {
-        let r = new STAChallengeRoll();
-        await r.evaluate();
-        /*
-        staActor.rollChallengeRoll(ev, 'Generic', 0, this.actor);
-        */
+        return this.actor.performChallengeRoll();
       });
 
       html.find('.rollable.challenge').click((ev) => {
-        /*
-        const damage = parseInt(ev.target.parentElement.nextElementSibling.nextElementSibling.innerText) ?
-          parseInt(ev.target.parentElement.nextElementSibling.nextElementSibling.innerText) : 0;
-        staActor.rollChallengeRoll(ev, ev.target.dataset.itemName, damage, this.actor);
-        */
+        const itemData = $(ev.currentTarget).closest('li.row.entry').data();
+        return this.actor.performChallengeRoll(itemData);
       });
     }
 }

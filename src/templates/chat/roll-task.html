@@ -1,4 +1,6 @@
  <div class="sta roll task">
+	{{#if isPrivate }}
+	{{else}}
     <div class="dice-roll">
         <div class="dice-result">
             <div class="dice-formula">
@@ -24,10 +26,10 @@
             </div>
             {{#if numComplications}}
             <h4 class="dice-total failure">
-                {{#if (gt numComplications 1)}}
-                {{replace (localize 'sta.roll.complicationPlural') '|#|' numComplications}}
-                {{else}}
+                {{#if (eq numComplications 1)}}
                 {{localize 'sta.roll.complication'}}
+                {{else}}
+                {{replace (localize 'sta.roll.complicationPlural') '|#|' numComplications}}
                 {{/if}}
             </h4>
             {{/if}}
@@ -40,6 +42,7 @@
             </h4>
         </div>
     </div>
+    <!--
     <div class="reroll-result task">
         <span>{{localize 'sta.roll.rerollresults'}}</span>
         <input id="actor" type="hidden" value="{{actor._id}}" />
@@ -47,4 +50,6 @@
         <input id="selectedSkill" type="hidden" value="{{selectedSkill}}" />
         <input id="speakerId" type="hidden" value="{{speakerId}}" />
     </div>
+    -->
+    {{/if}}
 </div>

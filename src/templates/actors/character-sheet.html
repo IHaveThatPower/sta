@@ -87,7 +87,7 @@
             {{#each system.attributes as |attribute key|}}
             <div class="stat row{{#if attribute.selected}} selected{{/if}}">
               <div class="text list-entry">{{localize attribute.label}}</div>
-              <input class="field numeric-entry" id="{{key}}" name="system.attributes.{{key}}.value" type="number" value="{{attribute.value}}" data-stat-type="attribute" />
+              <input class="field numeric-entry" id="{{key}}" name="system.attributes.{{key}}.value" type="number" value="{{attribute.value}}" data-stat-type="base" />
             </div>
             {{/each}}
             <input class="attribute" id="use-base" type="hidden" value="{{#each system.attributes}}{{#if this.selected}}{{@key}}{{/if}}{{/each}}" name="use-base" />
@@ -134,7 +134,7 @@
             </div>
             {{#each system.disciplines as |discipline key|}}
             <div class="stat row{{#if discipline.selected}} selected{{/if}}">
-              <input class="field numeric-entry" id="{{key}}" name="system.disciplines.{{key}}.value" type="text" value="{{discipline.value}}" placeholder="Name" data-stat-type="discipline" />
+              <input class="field numeric-entry" id="{{key}}" name="system.disciplines.{{key}}.value" type="text" value="{{discipline.value}}" placeholder="Name" data-stat-type="skill" />
               <div class="text list-entry"> {{localize discipline.label}} </div>
             </div>
             {{/each}}

@@ -234,9 +234,40 @@
 {
   padding: 4px 5px;
 }
-.dice-pool span.label
+.dice-pool .flexrow.challenge-row
+{
+  align-items: center;
+  justify-content: center;
+}
+.dice-pool .flexrow.challenge-row input
+{
+  width: unset;
+  min-width: 3rem;
+  flex-grow: 0;
+  text-align: center;
+  margin-right: 1rem;
+}
+.dice-pool .flexrow.challenge-row label
+{
+  flex: 0;
+  white-space: nowrap;
+}
+.dice-pool span.label,
+.dice-pool h1.label
 {
   text-align: center;
+}
+.dice-pool div#dice-pool-form-field-focus
+{
+  flex-grow: 1;
+}
+.dice-pool div#dice-pool-form-field-determination
+{
+  flex-grow: 2;
+}
+.dice-pool h1.label
+{
+  margin: 0;
 }
 .dice-pool datalist
 {
@@ -253,7 +284,8 @@
   background: unset;
   border: 0;
 }
-.sta.roll.task .dice-roll .dice-result .dice-tooltip .dice .dice-rolls
+.sta.roll.task .dice-roll .dice-result .dice-tooltip .dice .dice-rolls,
+.sta.roll.challenge .dice-roll .dice-result .dice-tooltip .dice .dice-rolls
 {
   display: flex;
   justify-content: center;

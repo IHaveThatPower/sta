@@ -1,5 +1,8 @@
 <form id="dice-pool-form" class="sta-form">
-    <div class=" dice-pool flexcol">
+    <div class="dice-pool flexcol">
+        <div class="flexrow" id="dice-pool-description">
+            <h1 class="label">{{ucwords base}} + {{ucwords skill}}</h1>
+        </div>
         <div class="flexrow" id="dice-pool-form-field-pool-size">
             <div><!-- style="flex: 1;"--><label class="label">{{localize 'sta.apps.pool'}}</label></div>
             <div><!--  style="flex: 1;display: flex;flex-direction: column;" -->
@@ -11,13 +14,15 @@
                 <input type="range" name="dicePoolSlider" min="1" max="5" value="{{dicePool}}" class="slider" id="dicePoolSlider" list="numdice" step="1" />
             </div>
         </div>
-        <div class="flexrow" id="dice-pool-form-field-focus">
-            <label class="label">{{localize 'sta.apps.focus'}}</label>
-            <input type="checkbox" name="usingFocus" id="usingFocus" />
-        </div>
-        <div class="flexrow" id="dice-pool-form-field-determination">
-            <label class="label">{{localize 'sta.apps.determination'}}</label>
-            <input type="checkbox" name="usingDetermination" id="usingDetermination" />
+        <div class="flexrow" id="dice-pool-modifiers">
+            <div class="flexrow" id="dice-pool-form-field-focus">
+                <label class="label">{{localize 'sta.apps.focus'}}</label>
+                <input type="checkbox" name="usingFocus" id="usingFocus" />
+            </div>
+            <div class="flexrow" id="dice-pool-form-field-determination">
+                <label class="label">{{localize 'sta.apps.determination'}}</label>
+                <input type="checkbox" name="usingDetermination" id="usingDetermination" />
+            </div>
         </div>
         <div class="flexrow" id="dice-pool-form-field-complication">
             <label class="label">{{localize 'sta.apps.complicationrange'}}</label><!-- style="flex: 80%;"-->
