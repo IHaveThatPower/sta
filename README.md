@@ -1,14 +1,14 @@
 # Foundry VTT Star Trek Adventures (Unofficial, Forked)
 
-> You <b> MUST </b> own the <a href="https://www.modiphius.net/collections/star-trek-adventures/products/star-trek-adventures-core-rulebook-pdf">Star Trek Adventures Tabletop RPG</a> to play this! This system does not attempt to explain the game or include any ready made characters, features or items. The system is designed for those who understand the rules and want to play via Foundry VTT.
+> You <b> MUST </b> own the <a href="https://www.modiphius.net/collections/star-trek-adventures/products/star-trek-adventures-core-rulebook-pdf">Star Trek Adventures Tabletop RPG</a> to play this! This system does not attempt to explain the game or include any ready made characters, features, or items. The system is designed for those who understand the rules and want to play via Foundry VTT.
 > 
 > Modiphius owns the property. I am in no way affiliated with Modiphius.
 
-Welcome! This is a fork of Mike Schoen's Star Trek Adventures system for Foundry VTT. This fork has diverged heavily from Mike's work and while it should remain compatible with any worlds that started using that system, the actual system code grows increasingly different as time goes on.
+Welcome! This is a fork of [Mike Schoen's Star Trek Adventures system for Foundry VTT](https://github.com/mkscho63/sta). This fork has diverged heavily from Mike's work and while it should remain compatible with any worlds that started using that system, the actual system code grows increasingly different as time goes on.
 
 I maintain this system for personal use, but post it here on GitHub in the spirit of community collaboration at the heart of Foundry development.
 
-Please visit Mike's original repo here, as well, which includes a detailed FAQ, wiki, and more. 
+Please visit [Mike's original repo here](https://github.com/mkscho63/sta), as well, which includes a detailed FAQ, wiki, and more. 
 
 ---
 
@@ -16,7 +16,6 @@ Please visit Mike's original repo here, as well, which includes a detailed FAQ, 
 ### Fork Author
 | **Ryan McClure** |
 | :---:|
-| |
 | <a href="https://github.com/IHaveThatPower" target="_blank">`github.com/IHaveThtPower`</a> |
 
 ### Original Author
