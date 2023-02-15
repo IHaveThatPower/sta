@@ -123,7 +123,8 @@ export class STARoll extends Roll
 export class STATaskRoll extends STARoll
 {
   static ROLL_FORMULA = '(@dicePool)d20cf>=(@complication)cs<=(@target)';
-  static DEFAULT_DICE_NUMBER = 2;
+  static DEFAULT_DICE_NUMBER_CHARACTER = 2;
+  static DEFAULT_DICE_NUMBER_VEHICLE = 1;
   static DEFAULT_COMPLICATION_RANGE = 1;
   static TEMPLATE_DIALOG = 'systems/sta/templates/apps/dicepool-attribute.html';
   static CHAT_TEMPLATE = 'systems/sta/templates/chat/roll-task.html';
@@ -145,12 +146,19 @@ export class STATaskRoll extends STARoll
       options = {};
 
     if (!options.dicePool)
-      options.dicePool = STATaskRoll.DEFAULT_DICE_NUMBER;
+    {
+      if (options.actor.type == 'character')
+        options.dicePool = STATaskRoll.DEFAULT_DICE_NUMBER_CHARACTER;
+      else
+        options.dicePool = STATaskRoll.DEFAULT_DICE_NUMBER_VEHICLE;
+    }
     if (!options.target)
       options.target = 1;
     if (!options.complicationRange)
       options.complicationRange = STATaskRoll.DEFAULT_COMPLICATION_RANGE;
-    if (!options.useFocus)
+    if (typeof options.useFocus == 'undefined' && options.actor.type != 'character')
+      options.useFocus = true;
+    else if (!options.useFocus)
       options.useFocus = false;
     if (!options.useDetermination)
       options.useDetermination = false;
@@ -181,6 +189,7 @@ export class STATaskRoll extends STARoll
     {
       data.data = {
         dicePool: data.options?.dicePool,
+        criticalThreshold: data.options?.criticalThreshold,
         target: data.options?.target,
         complication: data.options?.complicationRange
       };
@@ -350,7 +359,7 @@ export class STATaskRoll extends STARoll
       complicationThreshold: this.complicationThreshold,
       dicePool: this.terms[0]?.results,
       successes: (this.terms[0]?.results?.filter(die => die.success)?.map(die => die.count)?.reduce((a,b) => a + b,0) || 0),
-      numComplications: (this.terms[0]?.results?.filter(die => die.falure)?.length || 0),
+      numComplications: (this.terms[0]?.results?.filter(die => die.failure)?.length || 0),
       actor: this.options.actor,
       selectedBase: this.options.base,
       selectedSkill: this.options.skill,

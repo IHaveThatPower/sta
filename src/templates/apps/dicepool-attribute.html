@@ -17,11 +17,11 @@
         <div class="flexrow" id="dice-pool-modifiers">
             <div class="flexrow" id="dice-pool-form-field-focus">
                 <label class="label">{{localize 'sta.apps.focus'}}</label>
-                <input type="checkbox" name="usingFocus" id="usingFocus" />
+                <input type="checkbox" name="usingFocus" id="usingFocus"{{#if useFocus }} checked{{/if}} />
             </div>
             <div class="flexrow" id="dice-pool-form-field-determination">
                 <label class="label">{{localize 'sta.apps.determination'}}</label>
-                <input type="checkbox" name="usingDetermination" id="usingDetermination" />
+                <input type="checkbox" name="usingDetermination" id="usingDetermination"{{#if useDetermination }} checked{{/if}} />
             </div>
         </div>
         <div class="flexrow" id="dice-pool-form-field-complication">

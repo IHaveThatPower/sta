@@ -142,10 +142,10 @@ export class STATracker extends Application {
    *
    * @private
    * @param {STATracker.Resource} resource The resource to query the limit of.
-   * @returns {6|99999999}
+   * @returns {6|Infinity}
    */
   static LimitOf(resource) {
-    return resource == STATracker.Resource.Momentum ? 6 : 99999999;
+    return resource == this.Resource.Momentum ? 6 : Infinity;
   }
 
   /**
@@ -168,8 +168,9 @@ export class STATracker extends Application {
    * @param {(number|undefined)} value The value of the resource this message is relevant for.
    */
   static SendUpdateMessage(type, resource, value) {
-    game.socket.emit(STATracker.UPDATE_SOCKET_NAME,
-      new STATracker.SocketMessage(type, resource, value)
+    let self = this;
+    game.socket.emit(self.UPDATE_SOCKET_NAME,
+      new self.SocketMessage(type, resource, value)
     );
   }
 
@@ -200,28 +201,35 @@ export class STATracker extends Application {
    * @param {STATracker.Resource} resource The resource to modify.
    * @param {number} value The value to set for the given resource.
    */
-  static async DoUpdateResource(resource, value) {
-    if (!STATracker.UserHasPermissionFor(resource)) {
+  static async DoUpdateResource(resource, value)
+  {
+    if (!this.UserHasPermissionFor(resource))
+    {
       ui.notifications.error(game.i18n.localize(`sta.notifications.${resource}InvalidPermissions`));
       return;
-    } else if (value < 0) {
+    }
+    else if (value < 0)
+    {
       ui.notifications.warn(game.i18n.localize(`sta.notifications.${resource}Negative`));
-      STATracker.UpdateTracker()
+      this.UpdateTracker()
       return;
-    } else if (value > STATracker.LimitOf(resource)) {
+    }
+    else if (value > this.LimitOf(resource))
+    {
       ui.notifications.warn(game.i18n.localize(`sta.notifications.${resource}TooGreat`));
-      STATracker.UpdateTracker()
+      this.UpdateTracker()
       return;
     }
 
-    if(STATracker.UserCanWriteSettings()) {
+    if(this.UserCanWriteSettings())
+    {
       await game.settings.set('sta', resource, value);
-      STATracker.SendUpdateMessage(STATracker.MessageType.UpdateResource);
-      STATracker.UpdateTracker();
+      this.SendUpdateMessage(this.MessageType.UpdateResource, resource, value);
+      this.UpdateTracker();
     }
     else
     {
-      STATracker.SendUpdateMessage(STATracker.MessageType.SetResource, resource, value);
+      this.SendUpdateMessage(this.MessageType.SetResource, resource, value);
     }
   }
 
@@ -232,7 +240,7 @@ export class STATracker extends Application {
    * @param {1|-1} delta The delta applied to the given resource.
    */
   static OnAdjustTracker(resource, delta) {
-    STATracker.DoUpdateResource(resource, STATracker.ValueOf(resource) + delta);
+    this.DoUpdateResource(resource, this.ValueOf(resource) + delta);
   }
 
   /**
@@ -243,7 +251,7 @@ export class STATracker extends Application {
    */
   static OnInputTracker(resource) {
     let inputValue = Number.parseInt(document.getElementById(`sta-track-${resource}`).value);
-    STATracker.DoUpdateResource(resource, inputValue);
+    this.DoUpdateResource(resource, inputValue);
   }
 
   /**
@@ -252,8 +260,8 @@ export class STATracker extends Application {
    * @private
    */
   static UpdateTracker() {
-    document.getElementById('sta-track-momentum').value = STATracker.ValueOf(STATracker.Resource.Momentum);
-    document.getElementById('sta-track-threat').value = STATracker.ValueOf(STATracker.Resource.Threat);
+    document.getElementById('sta-track-momentum').value = this.ValueOf(STATracker.Resource.Momentum);
+    document.getElementById('sta-track-threat').value = this.ValueOf(STATracker.Resource.Threat);
   }
 
   /**
@@ -262,14 +270,14 @@ export class STATracker extends Application {
    * @private
    */
    static ConfigureTrackerInterface() {
-    if (!this.UserHasPermissionFor(STATracker.Resource.Momentum)) {
-      STATracker.MomentumButtons.forEach(b => b.style.display = "none");
-      STATracker.MomentumInput.disabled = true;
+    if (!this.UserHasPermissionFor(this.Resource.Momentum)) {
+      this.MomentumButtons.forEach(b => b.style.display = "none");
+      this.MomentumInput.disabled = true;
     }
 
-    if (!this.UserHasPermissionFor(STATracker.Resource.Threat)) {
-      STATracker.ThreatButtons.forEach(b => b.style.display = "none");
-      STATracker.ThreatInput.disabled = true;
+    if (!this.UserHasPermissionFor(this.Resource.Threat)) {
+      this.ThreatButtons.forEach(b => b.style.display = "none");
+      this.ThreatInput.disabled = true;
     }
   }
 
@@ -279,10 +287,11 @@ export class STATracker extends Application {
    * @private
    */
    static ConfigureTrackerButtonActions() {
-    $('#sta-momentum-track-decrease > .fas').click((_) => STATracker.OnAdjustTracker(STATracker.Resource.Momentum, -1));
-    $('#sta-momentum-track-increase > .fas').click((_) => STATracker.OnAdjustTracker(STATracker.Resource.Momentum, +1));
-    $('#sta-threat-track-decrease > .fas').click((_) => STATracker.OnAdjustTracker(STATracker.Resource.Threat, -1));
-    $('#sta-threat-track-increase > .fas').click((_) => STATracker.OnAdjustTracker(STATracker.Resource.Threat, +1));
+    const self = this;
+    $('#sta-momentum-track-decrease > .fas').click((_) => self.OnAdjustTracker(self.Resource.Momentum, -1));
+    $('#sta-momentum-track-increase > .fas').click((_) => self.OnAdjustTracker(self.Resource.Momentum, +1));
+    $('#sta-threat-track-decrease > .fas').click((_) => self.OnAdjustTracker(self.Resource.Threat, -1));
+    $('#sta-threat-track-increase > .fas').click((_) => self.OnAdjustTracker(self.Resource.Threat, +1));
   }
 
   /**
@@ -297,7 +306,8 @@ export class STATracker extends Application {
       }
     });
 
-    $('#sta-track-momentum').change((_) => STATracker.OnInputTracker(STATracker.Resource.Momentum));
+    let self = this;
+    $('#sta-track-momentum').change((_) => self.OnInputTracker(self.Resource.Momentum));
 
     $('#sta-track-threat').keydown((ev) => {
       if (ev.keyCode == 13) {
@@ -305,7 +315,7 @@ export class STATracker extends Application {
       }
     });
 
-    $('#sta-track-threat').change((_) => STATracker.OnInputTracker(STATracker.Resource.Threat));
+    $('#sta-track-threat').change((_) => self.OnInputTracker(self.Resource.Threat));
   }
 
   /**
@@ -353,24 +363,24 @@ export class STATracker extends Application {
    * @param {HTMLElement} html
    */
   activateListeners(html) {
-    STATracker.MomentumButtons.push(
+    this.constructor.MomentumButtons.push(
       html.find('#sta-momentum-track-decrease')[0],
       html.find('#sta-momentum-track-increase')[0]
     )
-    STATracker.MomentumInput = html.find('#sta-track-momentum')[0];
+    this.constructor.MomentumInput = html.find('#sta-track-momentum')[0];
 
-    STATracker.ThreatButtons.push(
+    this.constructor.ThreatButtons.push(
       html.find('#sta-threat-track-decrease')[0],
       html.find('#sta-threat-track-increase')[0]
     )
-    STATracker.ThreatInput = html.find('#sta-track-threat')[0];
+    this.constructor.ThreatInput = html.find('#sta-track-threat')[0];
 
-    game.socket.on(STATracker.UPDATE_SOCKET_NAME, STATracker.OnSocketData);
+    game.socket.on(this.constructor.UPDATE_SOCKET_NAME, this.constructor.OnSocketData);
 
-    STATracker.ConfigureTrackerInterface();
-    STATracker.ConfigureTrackerButtonActions();
-    STATracker.ConfigureTrackerInputActions();
-    STATracker.ConfigureTrackerToggleAction();
-    STATracker.UpdateTracker();
+    this.constructor.ConfigureTrackerInterface();
+    this.constructor.ConfigureTrackerButtonActions();
+    this.constructor.ConfigureTrackerInputActions();
+    this.constructor.ConfigureTrackerToggleAction();
+    this.constructor.UpdateTracker();
   }
 }
