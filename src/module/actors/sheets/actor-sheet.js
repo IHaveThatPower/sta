@@ -259,9 +259,9 @@ export class STAActorSheet extends ActorSheet {
       html.find('.stat.row .text.list-entry').click((ev) => {
         try
         {
-          let statChosen = $(ev.currentTarget).siblings('input.field').attr('id');
-          let statType = $(ev.currentTarget).siblings('input.field').data('statType');
-          let statHiddenInput = $('input#use-'+statType);
+          const statChosen = $(ev.currentTarget).siblings('input.field').attr('id');
+          const statType = $(ev.currentTarget).siblings('input.field').data('statType');
+          const statHiddenInput = html.find('input#use-'+statType);
           statHiddenInput.val(statChosen);
           this.submit();
         }
@@ -283,6 +283,11 @@ export class STAActorSheet extends ActorSheet {
       html.find('.check-button.attribute, .check-button.department').click(async (ev) => {
         const selectedBase = html.find('input#use-base').val();
         const selectedSkill = html.find('input#use-skill').val();
+        if (!selectedBase || !selectedSkill)
+        {
+          ui.notifications.error("Please select both an attribute/system and skill/department before rolling");
+          return;
+        }
         return this.actor.performTaskRoll(selectedBase, selectedSkill);
       });
 
