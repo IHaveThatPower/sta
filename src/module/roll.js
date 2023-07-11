@@ -262,6 +262,11 @@ export class STATaskRoll extends STARoll
       baseValue = Number(this.options.actor?.system?.systems[this.options.base]?.value);
       skillValue = Number(this.options.actor?.system?.departments[this.options.skill]?.value);
     }
+    if (isNaN(baseValue) || isNaN(skillValue))
+    {
+      ui.notifications.error(`Non-numeric value for one of the selected statistics: [ ${this.options.base}: ${baseValue}, ${this.options.skill}: ${skillValue} ]`);
+      return;
+    }
     this.options.target = baseValue + skillValue;
     this.options.criticalThreshold = 1;
     if (form.usingFocus.checked)
@@ -269,7 +274,12 @@ export class STATaskRoll extends STARoll
       this.options.useFocus = true;
       this.options.criticalThreshold = skillValue;
     }
-    this.options.complicationRange = Number(form.complicationRange.value) || this.options.complicationRange;
+    this.options.complicationRange = (form?.complicationRange?.value) ? Number(form.complicationRange.value) : this.options.complicationRange;
+    if (isNaN(this.options.complicationRange))
+    {
+      ui.notifications.error(`Non-numeric value for complication range: ${this.options.complicationRange}`);
+      return;
+    }
     this.options.useDetermination = Boolean(form.usingDetermination.checked);
 
     // Regenerate some of our central assumptions now
